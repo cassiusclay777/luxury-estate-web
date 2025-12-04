@@ -10,9 +10,6 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    css: true,
-  },
 };
 
 export default nextConfig;

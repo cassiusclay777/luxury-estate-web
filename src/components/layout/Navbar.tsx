@@ -46,19 +46,22 @@ export function Navbar() {
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            {['Nemovitosti', 'Mapa', 'O nás', 'Kontakt'].map((item, i) => (
-              <motion.a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * i }}
-                whileHover={{ y: -2 }}
-                className="relative text-white/70 hover:text-white transition-colors group"
-              >
-                {item}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[var(--gold)] to-[var(--cyan)] group-hover:w-full transition-all duration-300" />
-              </motion.a>
+            {[
+              { label: 'Nemovitosti', href: '/properties' },
+              { label: 'O nás', href: '/#o-nas' }
+            ].map((item, i) => (
+              <Link key={item.href} href={item.href}>
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * i }}
+                  whileHover={{ y: -2 }}
+                  className="relative text-white/70 hover:text-white transition-colors group"
+                >
+                  {item.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[var(--gold)] to-[var(--cyan)] group-hover:w-full transition-all duration-300" />
+                </motion.div>
+              </Link>
             ))}
           </div>
 
@@ -123,15 +126,18 @@ export function Navbar() {
               </button>
 
               <div className="mt-20 flex flex-col gap-6">
-                {['Nemovitosti', 'Mapa', 'O nás', 'Kontakt'].map((item) => (
-                  <a
-                    key={item}
-                    href={`#${item.toLowerCase()}`}
+                {[
+                  { label: 'Nemovitosti', href: '/properties' },
+                  { label: 'O nás', href: '/#o-nas' }
+                ].map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
                     onClick={() => setMobileOpen(false)}
                     className="text-2xl font-semibold text-white/80 hover:text-white hover:translate-x-2 transition-all"
                   >
-                    {item}
-                  </a>
+                    {item.label}
+                  </Link>
                 ))}
               </div>
             </motion.div>

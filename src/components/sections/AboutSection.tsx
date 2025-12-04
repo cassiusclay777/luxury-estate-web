@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 
 export function AboutSection() {
   return (
-    <section id="o nás" className="relative py-32 overflow-hidden">
+    <section id="o-nas" className="relative py-32 overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-[var(--purple-light)]/10 blur-[200px] -z-10" />
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-[var(--gold)]/10 blur-[100px] -z-10" />
