@@ -2,16 +2,87 @@
 > reality-estate-web@0.1.0 dev
 > next dev
 
+ ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
   ▲ Next.js 14.2.33
-  - Local:        http://localhost:3000
+  - Local:        http://localhost:54112
   - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 1731ms
- ○ Compiling /properties/[id] ...
- ✓ Compiled /properties/[id] in 8.2s (2420 modules)
- ✓ Compiled in 331ms (1177 modules)
- GET /properties/test 404 in 9250ms
- GET /properties/ec5c7ef0-e73e-44e3-8fc9-a0ee8acff05b 200 in 304ms
- GET /properties/ec5c7ef0-e73e-44e3-8fc9-a0ee8acff05b 200 in 60ms
-^C^C
+
+   We detected TypeScript in your project and reconfigured your tsconfig.json file for you. Strict-mode is set to false by default.
+   The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+
+   	- include was updated to add './.next/types/**/*.ts'
+
+ ✓ Ready in 1861ms
+ ○ Compiling / ...
+ ⨯ ./src/app/globals.css
+Module parse failed: Unexpected character '@' (2:0)
+| /* /src/app/globals.css */
+> @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+| 
+| @tailwind base;
+
+Import trace for requested module:
+./src/app/globals.css
+./src/app/layout.tsx
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../typescript/lib/typescript' in c:\Projekty\Reality-estate-web\node_modules\next\dist\build for build dependencies doesn't lead to expected result 'C:\Projekty\Reality-estate-web\node_modules\typescript\lib\typescript.js', but to 'c:\Projekty\Reality-estate-web\node_modules\typescript\lib\typescript.js' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../typescript/lib/typescript (expected C:\Projekty\Reality-estate-web\node_modules\typescript\lib\typescript.js)
+<w>  at file dependencies c:\Projekty\Reality-estate-web\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file c:\Projekty\Reality-estate-web\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file dependencies c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack-config.js
+<w>  at file c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack-config.js
+<w>  at file dependencies c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../typescript/lib/typescript' in c:\Projekty\Reality-estate-web\node_modules\next\dist\build for build dependencies doesn't lead to expected result 'C:\Projekty\Reality-estate-web\node_modules\typescript\lib\typescript.js', but to 'c:\Projekty\Reality-estate-web\node_modules\typescript\lib\typescript.js' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../typescript/lib/typescript (expected C:\Projekty\Reality-estate-web\node_modules\typescript\lib\typescript.js)
+<w>  at file dependencies c:\Projekty\Reality-estate-web\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file c:\Projekty\Reality-estate-web\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file dependencies c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack-config.js
+<w>  at file c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack-config.js
+<w>  at file dependencies c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+ ⨯ ./src/app/globals.css
+Module parse failed: Unexpected character '@' (2:0)
+| /* /src/app/globals.css */
+> @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+| 
+| @tailwind base;
+
+Import trace for requested module:
+./src/app/globals.css
+./src/app/layout.tsx
+ ⨯ ./src/app/globals.css
+Module parse failed: Unexpected character '@' (2:0)
+| /* /src/app/globals.css */
+> @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+| 
+| @tailwind base;
+
+Import trace for requested module:
+./src/app/globals.css
+./src/app/layout.tsx
+ GET / 500 in 13215ms
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../typescript/lib/typescript' in c:\Projekty\Reality-estate-web\node_modules\next\dist\build for build dependencies doesn't lead to expected result 'C:\Projekty\Reality-estate-web\node_modules\typescript\lib\typescript.js', but to 'c:\Projekty\Reality-estate-web\node_modules\typescript\lib\typescript.js' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../typescript/lib/typescript (expected C:\Projekty\Reality-estate-web\node_modules\typescript\lib\typescript.js)
+<w>  at file dependencies c:\Projekty\Reality-estate-web\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file c:\Projekty\Reality-estate-web\node_modules\next\dist\build\load-jsconfig.js
+<w>  at file dependencies c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack-config.js
+<w>  at file c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack-config.js
+<w>  at file dependencies c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs c:\Projekty\Reality-estate-web\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+ GET / 500 in 14ms
+ ⨯ ./src/app/globals.css
+Module parse failed: Unexpected character '@' (2:0)
+| /* /src/app/globals.css */
+> @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+| 
+| @tailwind base;
+
+Import trace for requested module:
+./src/app/globals.css
+./src/app/layout.tsx
+ ✓ Compiled /_error in 422ms (1498 modules)

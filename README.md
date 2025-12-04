@@ -6,6 +6,10 @@ Prémiová realitní platforma s 3D vizualizacemi, chytrým vyhledáváním a re
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green)
 
+## 🚀 Live Demo
+
+**Demo:** [https://luxestate-9qyjq2tyy-cashi777s-projects.vercel.app](https://luxestate-9qyjq2tyy-cashi777s-projects.vercel.app) *(live!)*
+
 ## ✨ Features
 
 - 🔍 **Smart Fulltext Search** - PostgreSQL s pg_trgm (typo tolerance)
@@ -118,6 +122,64 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 # Optional for production maps
 NEXT_PUBLIC_MAPTILER_KEY=your_maptiler_key
 ```
+
+## 📸 Screenshots
+
+![Homepage 3D Map](https://i.imgur.com/placeholder-hero.png)  
+*Interaktivní 3D mapa s nemovitostmi*
+
+![Search in Action](https://i.imgur.com/placeholder-search.png)  
+*Chytré vyhledávání s filtry*
+
+## 🗺️ Roadmap 2026
+
+- **AI Virtual Staging** – Stable Diffusion via HuggingFace (zdarma)
+- **Voice Search** – Web Speech API pro hlasové vyhledávání
+- **AR Prohlídky** – model-viewer.dev pro AR prohlídky na mobilech
+- **Dark Mode Auto‑Switch** – automatické přepínání podle barvy nemovitosti
+- **Predictive Analytics** – AI odhady cen a trendů
+
+## 🐛 Debug & Support
+
+**Mapa bez klíče?** Získej free MapTiler key z [jejich dashboardu](https://cloud.maptiler.com/).
+
+**Seed chyby?** Spusť `npm run seed` a pošli error log – opravím v jednom commitu.
+
+**Chceš přidat dark mode auto‑switch?** Kontaktuj mě, hodím snippet do `components/ui/theme-toggle.tsx`.
+
+## 🛠️ Fix CSS Build Error (Next.js 15 + Tailwind CSS v4)
+
+Pokud se objeví chyba:
+```
+Module parse failed: Unexpected character '@' (1:0)
+> @tailwind base;
+| @tailwind components;
+| @tailwind utilities;
+```
+
+Spusť tyto příkazy:
+
+```bash
+# 1. Odstraň node_modules a cache
+rm -rf node_modules .next package-lock.json
+
+# 2. Vyčisti npm cache
+npm cache clean --force
+
+# 3. Nainstaluj závislosti znovu
+npm install
+
+# 4. Spusť dev server
+npm run dev
+```
+
+**Ujisti se, že máš správné konfigurační soubory:**
+- `tailwind.config.ts` (viz výše)
+- `postcss.config.mjs` (ES module)
+- `app/globals.css` (s @tailwind direktivami na začátku)
+- `tsconfig.json` (správné paths)
+
+Pokud problém přetrvává, zkontroluj verze Next.js a Tailwind CSS v `package.json`.
 
 ## 📝 License
 

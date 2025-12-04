@@ -1,7 +1,7 @@
 'use client'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, MapPin, Home, DollarSign, X, Sparkles, TrendingUp } from 'lucide-react'
+import { Search, MapPin, Home, DollarSign, X, Sparkles, TrendingUp, Mic, MicOff } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getSearchSuggestions } from '@/lib/search'
 import { useRouter } from 'next/navigation'
@@ -19,7 +19,10 @@ export function SearchBar() {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [loading, setLoading] = useState(false)
   const [priceRange, setPriceRange] = useState('')
+  const [isListening, setIsListening] = useState(false)
+  const [transcript, setTranscript] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+  const recognitionRef = useRef<any>(null)
 
   // Debounced search suggestions
   const fetchSuggestions = useCallback(async (searchQuery: string) => {
@@ -43,6 +46,55 @@ export function SearchBar() {
       setLoading(false)
     }
   }, [])
+
+  // Voice recognition setup
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).webkitSpeechRecognition
+      const recognition = new SpeechRecognition()
+      recognition.continuous = false
+      recognition.interimResults = false
+      recognition.lang = 'cs-CZ'
+
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript
+        setQuery(transcript)
+        setTranscript(transcript)
+        setIsListening(false)
+      }
+
+      recognition.onerror = (event: any) => {
+        console.error('Speech recognition error', event.error)
+        setIsListening(false)
+      }
+
+      recognition.onend = () => {
+        setIsListening(false)
+      }
+
+      recognitionRef.current = recognition
+    }
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop()
+      }
+    }
+  }, [])
+
+  const toggleListening = () => {
+    if (!recognitionRef.current) {
+      alert('Web Speech API není v tomto prohlížeči podporována.')
+      return
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop()
+      setIsListening(false)
+    } else {
+      recognitionRef.current.start()
+      setIsListening(true)
+    }
+  }
 
   // Debounce effect
   useEffect(() => {
@@ -134,6 +186,20 @@ export function SearchBar() {
               placeholder="Hledejte lokalitu, typ nemovitosti... (např. 'Brno 2+kk do 7M')"
               className="flex-1 bg-transparent border-none outline-none text-lg text-white placeholder:text-white/40 py-4"
             />
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={toggleListening}
+              aria-label={isListening ? 'Zastavit nahrávání' : 'Spustit hlasové vyhledávání'}
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isListening ? 'bg-red-500/20 text-red-400' : 'bg-white/10 hover:bg-white/20'}`}
+            >
+              {isListening ? (
+                <MicOff className="w-5 h-5" />
+              ) : (
+                <Mic className="w-5 h-5" />
+              )}
+            </motion.button>
             {query && (
               <motion.button
                 type="button"

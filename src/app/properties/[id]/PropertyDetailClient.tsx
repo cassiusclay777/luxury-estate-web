@@ -9,7 +9,7 @@ import * as THREE from 'three'
 import {
   ArrowLeft, Heart, Share2, Bed, Bath, Maximize, MapPin,
   Sparkles, ChevronLeft, ChevronRight, Play, Box,
-  Wand2, Calendar, Phone, Mail, Star
+  Wand2, Calendar, Phone, Mail, Star, Eye
 } from 'lucide-react'
 import { formatPrice, cn } from '@/lib/utils'
 
@@ -98,6 +98,7 @@ function FloorPlan3D() {
 function PhotoGallery({ images }: { images: string[] }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [showAR, setShowAR] = useState(false)
 
   const nextImage = () => setCurrentIndex((prev) => (prev + 1) % images.length)
   const prevImage = () => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
@@ -160,15 +161,26 @@ function PhotoGallery({ images }: { images: string[] }) {
           ))}
         </div>
 
-        {/* 360 View button */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="absolute top-4 right-4 px-4 py-2 rounded-full bg-gradient-to-r from-[var(--gold)] to-[var(--purple-light)] text-white font-bold flex items-center gap-2"
-        >
-          <Play className="w-4 h-4" />
-          360° Prohlídka
-        </motion.button>
+        {/* 360 View & AR buttons */}
+        <div className="absolute top-4 right-4 flex gap-2">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-4 py-2 rounded-full bg-gradient-to-r from-[var(--gold)] to-[var(--purple-light)] text-white font-bold flex items-center gap-2"
+          >
+            <Play className="w-4 h-4" />
+            360° Prohlídka
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowAR(true)}
+            className="px-4 py-2 rounded-full bg-gradient-to-r from-[var(--cyan)] to-[var(--purple-light)] text-white font-bold flex items-center gap-2"
+          >
+            <Eye className="w-4 h-4" />
+            AR prohlídka
+          </motion.button>
+        </div>
       </div>
 
       {/* Fullscreen modal */}
@@ -191,71 +203,232 @@ function PhotoGallery({ images }: { images: string[] }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* AR Modal */}
+      <AnimatePresence>
+        {showAR && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl"
+            onClick={() => setShowAR(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="glass rounded-3xl max-w-4xl w-full p-8 border border-white/20"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold font-['Syne'] flex items-center gap-3">
+                  <Eye className="w-7 h-7 text-[var(--cyan)]" />
+                  AR prohlídka (model-viewer.dev)
+                </h2>
+                <button
+                  onClick={() => setShowAR(false)}
+                  className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/20"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <p className="text-white/70 mb-6">
+                Naskenujte QR kód nebo otevřete na mobilu pro AR prohlídku nemovitosti. Používáme <a href="https://model-viewer.dev" className="text-[var(--cyan)] underline">model-viewer.dev</a> pro WebXR.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <h3 className="font-bold text-lg">Jak to funguje</h3>
+                  <ul className="space-y-2 text-white/70">
+                    <li>1. Otevřete stránku na mobilním zařízení</li>
+                    <li>2. Klepněte na tlačítko "AR prohlídka"</li>
+                    <li>3. Namiřte kameru na rovnou plochu</li>
+                    <li>4. 3D model nemovitosti se zobrazí ve vašem okolí</li>
+                  </ul>
+                  <div className="p-4 rounded-2xl bg-gradient-to-br from-[var(--navy)] to-[var(--purple)]">
+                    <p className="text-sm text-white/80">
+                      <strong>Tip:</strong> Pro nejlepší zážitek použijte zařízení s podporou ARCore (Android) nebo ARKit (iOS).
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="font-bold text-lg">QR kód pro mobil</h3>
+                  <div className="aspect-square rounded-2xl bg-gradient-to-br from-[var(--gold)] to-[var(--cyan)] flex items-center justify-center">
+                    <div className="text-center p-4">
+                      <div className="text-4xl mb-2">📱</div>
+                      <p className="text-white font-bold">Scan for AR</p>
+                      <p className="text-white/70 text-sm">luxestate.vercel.app/ar</p>
+                    </div>
+                  </div>
+                  <button className="w-full py-3 rounded-full bg-gradient-to-r from-[var(--gold)] to-[var(--purple-light)] text-white font-bold">
+                    Otevřít AR prohlídku
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-8 flex justify-end">
+                <button
+                  onClick={() => setShowAR(false)}
+                  className="px-6 py-3 rounded-full glass hover:bg-white/20 transition-colors"
+                >
+                  Zavřít
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   )
 }
 
-// Virtual Staging Button
+// Virtual Staging Button with AI Demo
 function VirtualStagingButton() {
   const [isHovered, setIsHovered] = useState(false)
+  const [showModal, setShowModal] = useState(false)
 
   return (
-    <motion.button
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      className="relative w-full py-4 rounded-2xl overflow-hidden group"
-    >
-      <motion.div
-        animate={{
-          background: isHovered
-            ? 'linear-gradient(90deg, var(--gold), var(--purple-light), var(--cyan), var(--gold))'
-            : 'linear-gradient(90deg, var(--gold), var(--purple-light))',
-          backgroundSize: isHovered ? '200% 100%' : '100% 100%',
-        }}
-        transition={{ duration: 0.5 }}
-        className="absolute inset-0"
-        style={{ backgroundPosition: isHovered ? '100% 0' : '0 0' }}
-      />
-
-      <motion.div
-        animate={{ x: isHovered ? [0, 5, -5, 0] : 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative flex items-center justify-center gap-3 text-white font-bold text-lg"
+    <>
+      <motion.button
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => setShowModal(true)}
+        className="relative w-full py-4 rounded-2xl overflow-hidden group"
       >
-        <Wand2 className="w-6 h-6" />
-        Virtuální staging s AI
-        <Sparkles className="w-5 h-5" />
-      </motion.div>
+        <motion.div
+          animate={{
+            background: isHovered
+              ? 'linear-gradient(90deg, var(--gold), var(--purple-light), var(--cyan), var(--gold))'
+              : 'linear-gradient(90deg, var(--gold), var(--purple-light))',
+            backgroundSize: isHovered ? '200% 100%' : '100% 100%',
+          }}
+          transition={{ duration: 0.5 }}
+          className="absolute inset-0"
+          style={{ backgroundPosition: isHovered ? '100% 0' : '0 0' }}
+        />
 
-      {/* Particles on hover */}
+        <motion.div
+          animate={{ x: isHovered ? [0, 5, -5, 0] : 0 }}
+          transition={{ duration: 0.5 }}
+          className="relative flex items-center justify-center gap-3 text-white font-bold text-lg"
+        >
+          <Wand2 className="w-6 h-6" />
+          Virtuální staging s AI (HuggingFace)
+          <Sparkles className="w-5 h-5" />
+        </motion.div>
+
+        {/* Particles on hover */}
+        <AnimatePresence>
+          {isHovered && (
+            <>
+              {Array.from({ length: 8 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  initial={{
+                    scale: 0,
+                    x: '50%',
+                    y: '50%',
+                    opacity: 1
+                  }}
+                  animate={{
+                    scale: [0, 1, 0],
+                    x: `${50 + (Math.random() - 0.5) * 100}%`,
+                    y: `${50 + (Math.random() - 0.5) * 100}%`,
+                    opacity: [1, 1, 0]
+                  }}
+                  transition={{ duration: 0.8, delay: i * 0.05 }}
+                  className="absolute w-2 h-2 rounded-full bg-white"
+                />
+              ))}
+            </>
+          )}
+        </AnimatePresence>
+      </motion.button>
+
+      {/* AI Staging Modal */}
       <AnimatePresence>
-        {isHovered && (
-          <>
-            {Array.from({ length: 8 }).map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{
-                  scale: 0,
-                  x: '50%',
-                  y: '50%',
-                  opacity: 1
-                }}
-                animate={{
-                  scale: [0, 1, 0],
-                  x: `${50 + (Math.random() - 0.5) * 100}%`,
-                  y: `${50 + (Math.random() - 0.5) * 100}%`,
-                  opacity: [1, 1, 0]
-                }}
-                transition={{ duration: 0.8, delay: i * 0.05 }}
-                className="absolute w-2 h-2 rounded-full bg-white"
-              />
-            ))}
-          </>
+        {showModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl"
+            onClick={() => setShowModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="glass rounded-3xl max-w-2xl w-full p-8 border border-white/20"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold font-['Syne'] flex items-center gap-3">
+                  <Wand2 className="w-7 h-7 text-[var(--gold)]" />
+                  AI Virtual Staging (Stable Diffusion)
+                </h2>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/20"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <p className="text-white/70 mb-6">
+                Vyzkoušejte si, jak by nemovitost vypadala s moderním zařízením pomocí AI modelu Stable Diffusion od HuggingFace.
+              </p>
+
+              <div className="grid grid-cols-2 gap-6 mb-8">
+                <div className="space-y-2">
+                  <div className="aspect-video rounded-2xl bg-gradient-to-br from-[var(--navy)] to-[var(--purple)] flex items-center justify-center">
+                    <span className="text-white/50">Původní místnost</span>
+                  </div>
+                  <p className="text-sm text-center text-white/50">Před stagingem</p>
+                </div>
+                <div className="space-y-2">
+                  <div className="aspect-video rounded-2xl bg-gradient-to-br from-[var(--gold)] to-[var(--cyan)] flex items-center justify-center">
+                    <span className="text-white">AI vygenerovaný interiér</span>
+                  </div>
+                  <p className="text-sm text-center text-white/50">Po stagingu</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="font-bold text-lg">Styly</h3>
+                <div className="flex flex-wrap gap-2">
+                  {['Moderní', 'Minimalistický', 'Skandinávský', 'Industriální', 'Luxusní'].map((style) => (
+                    <button
+                      key={style}
+                      className="px-4 py-2 rounded-full glass hover:bg-white/20 transition-colors"
+                    >
+                      {style}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-8 flex justify-end gap-4">
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="px-6 py-3 rounded-full glass hover:bg-white/20 transition-colors"
+                >
+                  Zavřít
+                </button>
+                <button className="px-6 py-3 rounded-full bg-gradient-to-r from-[var(--gold)] to-[var(--purple-light)] text-white font-bold">
+                  Vygenerovat AI staging
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
-    </motion.button>
+    </>
   )
 }
 
@@ -423,7 +596,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
                   JN
                 </div>
                 <div>
-                  <p className="font-semibold">Jan Novák</p>
+                  <p className="font-semibold">Patrik Jedlička</p>
                   <p className="text-white/50 text-sm">Senior makléř</p>
                 </div>
               </div>
@@ -437,16 +610,12 @@ export default function PropertyDetailClient({ property }: { property: Property 
                   <Calendar className="w-5 h-5" />
                   Naplánovat prohlídku
                 </motion.button>
-                <div className="grid grid-cols-2 gap-3">
-                  <button className="py-3 rounded-xl glass flex items-center justify-center gap-2 hover:bg-white/10 transition-colors">
-                    <Phone className="w-4 h-4" />
-                    Volat
-                  </button>
-                  <button className="py-3 rounded-xl glass flex items-center justify-center gap-2 hover:bg-white/10 transition-colors">
+                <a href="mailto:patrikjedlicka7@gmail.com" className="block">
+                  <button className="w-full py-3 rounded-xl glass flex items-center justify-center gap-2 hover:bg-white/10 transition-colors">
                     <Mail className="w-4 h-4" />
                     Email
                   </button>
-                </div>
+                </a>
               </div>
             </div>
           </motion.div>
