@@ -1,0 +1,17 @@
+
+> reality-estate-web@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.33
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1731ms
+ ○ Compiling /properties/[id] ...
+ ✓ Compiled /properties/[id] in 8.2s (2420 modules)
+ ✓ Compiled in 331ms (1177 modules)
+ GET /properties/test 404 in 9250ms
+ GET /properties/ec5c7ef0-e73e-44e3-8fc9-a0ee8acff05b 200 in 304ms
+ GET /properties/ec5c7ef0-e73e-44e3-8fc9-a0ee8acff05b 200 in 60ms
+^C^C
