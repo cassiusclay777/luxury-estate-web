@@ -10,7 +10,15 @@
       "Bash(grep:*)",
       "Bash(npm run dev:*)",
       "Bash(find:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(npm install)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill //F //PID 14972)",
+      "Bash(taskkill //F //PID 11192)",
+      "Bash(rm:*)",
+      "Bash(taskkill:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []

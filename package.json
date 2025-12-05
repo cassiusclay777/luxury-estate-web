@@ -2,6 +2,7 @@
   "name": "reality-estate-web",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,6 +11,8 @@
     "seed": "tsx scripts/seed-properties.ts"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^2.0.77",
+    "@ai-sdk/react": "^2.0.107",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
     "@supabase/ssr": "^0.8.0",
@@ -18,12 +21,15 @@
     "clsx": "^2.0.0",
     "dotenv": "^17.2.3",
     "framer-motion": "^10.18.0",
+    "groq-sdk": "^0.37.0",
     "lenis": "^1.0.42",
     "lucide-react": "^0.309.0",
     "maplibre-gl": "^4.0.0",
     "next": "^14.2.33",
+    "openai": "^6.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "replicate": "^1.4.0",
     "tailwind-merge": "^2.2.0",
     "three": "^0.160.0"
   },

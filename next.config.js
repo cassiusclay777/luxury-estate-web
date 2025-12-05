@@ -8,6 +8,19 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      // AI Virtual Staging - Replicate CDN
+      {
+        protocol: 'https',
+        hostname: 'replicate.delivery',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pbxt.replicate.delivery',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };

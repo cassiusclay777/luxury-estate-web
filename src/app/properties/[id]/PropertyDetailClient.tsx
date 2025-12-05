@@ -286,18 +286,16 @@ function PhotoGallery({ images }: { images: string[] }) {
 }
 
 // Virtual Staging Button with AI Demo
-function VirtualStagingButton() {
+function VirtualStagingButton({ propertyId }: { propertyId: string }) {
   const [isHovered, setIsHovered] = useState(false)
-  const [showModal, setShowModal] = useState(false)
 
   return (
-    <>
+    <Link href={`/ai-staging?propertyId=${propertyId}`}>
       <motion.button
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        onClick={() => setShowModal(true)}
         className="relative w-full py-4 rounded-2xl overflow-hidden group"
       >
         <motion.div
@@ -318,7 +316,7 @@ function VirtualStagingButton() {
           className="relative flex items-center justify-center gap-3 text-white font-bold text-lg"
         >
           <Wand2 className="w-6 h-6" />
-          Virtuální staging s AI (HuggingFace)
+          Virtuální staging s AI (Replicate)
           <Sparkles className="w-5 h-5" />
         </motion.div>
 
@@ -349,86 +347,7 @@ function VirtualStagingButton() {
           )}
         </AnimatePresence>
       </motion.button>
-
-      {/* AI Staging Modal */}
-      <AnimatePresence>
-        {showModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl"
-            onClick={() => setShowModal(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="glass rounded-3xl max-w-2xl w-full p-8 border border-white/20"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold font-['Syne'] flex items-center gap-3">
-                  <Wand2 className="w-7 h-7 text-[var(--gold)]" />
-                  AI Virtual Staging (Stable Diffusion)
-                </h2>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/20"
-                >
-                  ✕
-                </button>
-              </div>
-
-              <p className="text-white/70 mb-6">
-                Vyzkoušejte si, jak by nemovitost vypadala s moderním zařízením pomocí AI modelu Stable Diffusion od HuggingFace.
-              </p>
-
-              <div className="grid grid-cols-2 gap-6 mb-8">
-                <div className="space-y-2">
-                  <div className="aspect-video rounded-2xl bg-gradient-to-br from-[var(--navy)] to-[var(--purple)] flex items-center justify-center">
-                    <span className="text-white/50">Původní místnost</span>
-                  </div>
-                  <p className="text-sm text-center text-white/50">Před stagingem</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="aspect-video rounded-2xl bg-gradient-to-br from-[var(--gold)] to-[var(--cyan)] flex items-center justify-center">
-                    <span className="text-white">AI vygenerovaný interiér</span>
-                  </div>
-                  <p className="text-sm text-center text-white/50">Po stagingu</p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="font-bold text-lg">Styly</h3>
-                <div className="flex flex-wrap gap-2">
-                  {['Moderní', 'Minimalistický', 'Skandinávský', 'Industriální', 'Luxusní'].map((style) => (
-                    <button
-                      key={style}
-                      className="px-4 py-2 rounded-full glass hover:bg-white/20 transition-colors"
-                    >
-                      {style}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-8 flex justify-end gap-4">
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="px-6 py-3 rounded-full glass hover:bg-white/20 transition-colors"
-                >
-                  Zavřít
-                </button>
-                <button className="px-6 py-3 rounded-full bg-gradient-to-r from-[var(--gold)] to-[var(--purple-light)] text-white font-bold">
-                  Vygenerovat AI staging
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+    </Link>
   )
 }
 
@@ -585,7 +504,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
             )}
 
             {/* Virtual staging */}
-            <VirtualStagingButton />
+            <VirtualStagingButton propertyId={property.id} />
 
             {/* Contact */}
             <div className="glass rounded-3xl p-6">
@@ -593,7 +512,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
 
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--gold)] to-[var(--purple-light)] flex items-center justify-center text-xl font-bold">
-                  JN
+                  PJ
                 </div>
                 <div>
                   <p className="font-semibold">Patrik Jedlička</p>

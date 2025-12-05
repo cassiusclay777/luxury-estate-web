@@ -6,7 +6,7 @@ import { AdvancedSearch } from '@/components/search/AdvancedSearch'
 import { PropertyMap } from '@/components/map/PropertyMap'
 import { PropertyCard } from '@/components/property/PropertyCard'
 import { getAllProperties } from '@/app/actions/properties'
-import type { Database } from '@/types/database.types'
+import type { Database } from 'types/database.types'
 import { Loader2 } from 'lucide-react'
 
 type Property = Database['public']['Tables']['properties']['Row']

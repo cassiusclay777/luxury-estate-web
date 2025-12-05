@@ -38,3 +38,7 @@ next-env.d.ts
 
 .vercel
 .env*.local
+
+# AI Virtual Staging - uploads and logs
+/public/uploads/
+/data/staging-logs.json

@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { LenisProvider } from '@/components/providers/LenisProvider'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
+import { AIProvider } from '@/components/providers/AIProvider'
 import { Navbar } from '@/components/layout/Navbar'
 import { ParticleField } from '@/components/effects/ParticleField'
 
@@ -34,6 +35,7 @@ export default function RootLayout({
             <ParticleField />
             <Navbar />
             <main>{children}</main>
+            <AIProvider />
           </LenisProvider>
         </ThemeProvider>
       </body>
