@@ -19,6 +19,19 @@ Prémiová realitní platforma s 3D vizualizacemi, chytrým vyhledáváním a re
 - ⚡ **Blazing Fast** - Next.js 14 App Router, optimalizovaný výkon
 - 📱 **Responsive** - Mobile-first design
 
+## 🌟 World-Class Features 2026
+
+- **AI Virtual Staging** – Replicate + Pollinations fallback pro virtuální zařízení nemovitostí
+- **AI české popisy** – Groq Llama 3.1 70B pro automatické generování popisů v češtině
+- **LuxEstimate™** – AI odhad tržní ceny nemovitosti na základě lokalizace a parametrů
+- **Interaktivní heatmapa cen za m²** – Jihomoravský kraj s real-time daty
+- **Porovnání nemovitostí** – Drag & drop interface pro porovnání až 4 nemovitostí najednou
+- **Voice search v češtině** – Web Speech API pro hlasové vyhledávání
+- **AR prohlídky na mobilu** – WebXR pomocí model-viewer.dev
+- **Web Push notifikace** – Automatické upozornění při poklesu ceny sledovaných nemovitostí
+- **Luxury Mode** – Speciální zlatý design pro nemovitosti nad 20M Kč
+- **Kalkulačka hypotéky** – S real-time daty z ČNB pro přesný výpočet splátek
+
 ## 🚀 Quick Start
 
 ```bash

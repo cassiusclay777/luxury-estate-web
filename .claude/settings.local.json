@@ -18,7 +18,22 @@
       "Bash(taskkill //F //PID 11192)",
       "Bash(rm:*)",
       "Bash(taskkill:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npx tsx:*)",
+      "Bash(docker kill:*)",
+      "Bash(supabase db reset:*)",
+      "Bash(del supabasemigrations20251206052725_update_properties_schema.sql)",
+      "Bash(supabase stop:*)",
+      "Bash(supabase start:*)",
+      "Bash(supabase gen types:*)",
+      "Bash(npx supabase status)",
+      "Bash(docker rm:*)",
+      "Bash(npm run import:sreality:*)",
+      "Bash(NODE_OPTIONS='--trace-warnings' npm run build:*)",
+      "Bash(npx next build:*)",
+      "Bash(timeout 10 npm run dev)",
+      "Bash(tee:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

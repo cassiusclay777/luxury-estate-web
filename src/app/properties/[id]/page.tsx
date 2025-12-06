@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import PropertyDetailClient from './PropertyDetailClient'
 
+export const dynamic = 'force-dynamic'
+
 async function getProperty(id: string) {
   const { data, error } = await supabase
     .from('properties')

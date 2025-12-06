@@ -60,7 +60,7 @@ export function AdvancedSearch({ onResults, onViewModeChange, viewMode = 'grid' 
       })
 
       if (!error && onResults) {
-        onResults(properties)
+        onResults(properties as unknown as Property[])
       }
     } finally {
       setIsSearching(false)
@@ -85,8 +85,8 @@ export function AdvancedSearch({ onResults, onViewModeChange, viewMode = 'grid' 
           })
 
           if (!error && onResults) {
-            // Convert NearbyResult[] to Property[] by removing distance_km
-            const convertedProperties = properties.map(({ distance_km, ...property }) => property as Property);
+          // Convert NearbyResult[] to Property[] by removing distance_km
+          const convertedProperties = properties.map(({ distance_km, ...property }) => property as unknown as Property);
             onResults(convertedProperties)
           }
           setIsGeolocationLoading(false)

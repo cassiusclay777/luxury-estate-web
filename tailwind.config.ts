@@ -27,6 +27,11 @@ const config: Config = {
           400: '#818cf8',
           500: '#6366f1',
         },
+        golden: {
+          400: '#f4d03f',
+          500: '#d4af37',
+          600: '#b8941f',
+        },
       },
       boxShadow: {
         'indigo-glow': '0 0 20px -5px rgba(99, 102, 241, 0.15)',

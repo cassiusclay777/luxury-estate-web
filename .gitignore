@@ -42,3 +42,6 @@ next-env.d.ts
 # AI Virtual Staging - uploads and logs
 /public/uploads/
 /data/staging-logs.json
+
+# OpenMemory - IDE/Assistant specific rules
+.cursor\rules\openmemory.mdc

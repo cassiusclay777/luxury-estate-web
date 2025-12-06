@@ -12,6 +12,7 @@ import {
   Wand2, Calendar, Phone, Mail, Star, Eye
 } from 'lucide-react'
 import { formatPrice, cn } from '@/lib/utils'
+import { LuxuryModeWrapper } from '@/components/ui/LuxuryModeWrapper'
 
 interface Property {
   id: string
@@ -22,10 +23,10 @@ interface Property {
   city: string
   bedrooms: number | null
   bathrooms: number | null
-  sqft: number | null
-  images: string[]
+  area: number | null
+  images: string[] | null
   features: string[] | null
-  property_type: string | null
+  type: string | null
 }
 
 // 3D Floor Plan Component
@@ -353,8 +354,10 @@ function VirtualStagingButton({ propertyId }: { propertyId: string }) {
 
 export default function PropertyDetailClient({ property }: { property: Property }) {
   const [liked, setLiked] = useState(false)
+  const images = property.images || []
 
   return (
+    <LuxuryModeWrapper price={property.price}>
     <div className="min-h-screen pt-24 pb-32">
       <div className="max-w-7xl mx-auto px-6">
         {/* Back button */}
@@ -379,7 +382,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
             animate={{ opacity: 1, y: 0 }}
             className="lg:col-span-2 space-y-6"
           >
-            <PhotoGallery images={property.images} />
+            <PhotoGallery images={images} />
 
             {/* Description */}
             <motion.div
@@ -429,7 +432,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <span className="text-[var(--gold)] text-sm font-medium uppercase tracking-wider">
-                    {property.property_type || 'Nemovitost'}
+                    {property.type || 'Nemovitost'}
                   </span>
                   <h1 className="text-2xl font-bold font-['Syne'] mt-1">{property.title}</h1>
                 </div>
@@ -477,7 +480,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
                 </div>
                 <div className="text-center">
                   <Maximize className="w-5 h-5 mx-auto mb-1 text-[var(--gold)]" />
-                  <p className="text-xl font-bold">{property.sqft || '-'}</p>
+                  <p className="text-xl font-bold">{property.area || '-'}</p>
                   <p className="text-xs text-white/50">m²</p>
                 </div>
               </div>
@@ -541,5 +544,6 @@ export default function PropertyDetailClient({ property }: { property: Property 
         </div>
       </div>
     </div>
+    </LuxuryModeWrapper>
   )
 }

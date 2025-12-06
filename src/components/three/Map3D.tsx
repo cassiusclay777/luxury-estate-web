@@ -1,135 +1,202 @@
-// /src/components/three/Map3D.tsx
 'use client'
-import { useRef, useState, useEffect, Suspense } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, PerspectiveCamera, Float } from '@react-three/drei'
-import { motion } from 'framer-motion'
-import * as THREE from 'three'
+import { useEffect, useRef, useState } from 'react'
+import maplibregl from 'maplibre-gl'
+import 'maplibre-gl/dist/maplibre-gl.css'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Property } from '@/lib/supabase'
+import { formatPrice } from '@/lib/utils'
 
-function Building({ position, height, delay }: { position: [number, number, number]; height: number; delay: number }) {
-  const meshRef = useRef<THREE.Mesh>(null)
-  const [hovered, setHovered] = useState(false)
-  const [visible, setVisible] = useState(false)
+interface Map3DProps {
+  properties?: Property[]
+  onPropertyClick?: (property: Property) => void
+  center?: [number, number]
+  zoom?: number
+}
 
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.position.y = THREE.MathUtils.lerp(
-        meshRef.current.position.y,
-        visible ? height / 2 : -5,
-        0.05
-      )
-      if (hovered) {
-        meshRef.current.scale.y = THREE.MathUtils.lerp(meshRef.current.scale.y, 1.2, 0.1)
-      } else {
-        meshRef.current.scale.y = THREE.MathUtils.lerp(meshRef.current.scale.y, 1, 0.1)
-      }
-    }
-  })
+export function Map3D({ 
+  properties = [], 
+  onPropertyClick, 
+  center = [14.4378, 50.0755], 
+  zoom = 12 
+}: Map3DProps) {
+  const mapContainer = useRef<HTMLDivElement>(null)
+  const map = useRef<maplibregl.Map | null>(null)
+  const [mapLoaded, setMapLoaded] = useState(false)
+  const [hoveredProperty, setHoveredProperty] = useState<Property | null>(null)
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), delay * 200)
-    return () => clearTimeout(timer)
-  }, [delay])
+    if (!mapContainer.current || map.current) return
 
-  return (
-    <Float speed={2} rotationIntensity={0} floatIntensity={0.5}>
-      <mesh
-        ref={meshRef}
-        position={[position[0], -5, position[2]]}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-        castShadow
-        receiveShadow
-      >
-        <boxGeometry args={[0.8, height, 0.8]} />
-        <meshStandardMaterial
-          color={hovered ? '#D4AF37' : '#7C3AED'}
-          emissive={hovered ? '#D4AF37' : '#4C1D95'}
-          emissiveIntensity={hovered ? 0.5 : 0.2}
-          metalness={0.8}
-          roughness={0.2}
-        />
-      </mesh>
-    </Float>
-  )
+    // Initialize map with satellite style
+    map.current = new maplibregl.Map({
+      container: mapContainer.current,
+      style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json', // Dark style as fallback
+      center: center,
+      zoom: zoom,
+      pitch: 0,
+      bearing: 0,
+    })
+
+    // Try to load satellite style (requires Mapbox token or alternative)
+    // For open-source alternative, using CartoDB dark style
+    map.current.on('load', () => {
+      setMapLoaded(true)
+    })
+
+    return () => {
+      map.current?.remove()
+      map.current = null
+      }
+  }, [center, zoom])
+
+  // Add property markers
+  useEffect(() => {
+    if (!map.current || !mapLoaded || !properties.length) return
+
+    const markers: maplibregl.Marker[] = []
+
+    properties.forEach((property) => {
+      if (!property.lat || !property.lng || !map.current) return
+
+      // Create custom marker - white circle with indigo dot
+      const el = document.createElement('div')
+      el.className = 'property-marker'
+      el.style.cssText = `
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+      `
+
+      // Indigo dot inside
+      const dot = document.createElement('div')
+      dot.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #6366f1;
+      `
+      el.appendChild(dot)
+
+      // Price bubble (hidden by default)
+      const priceEl = document.createElement('div')
+      priceEl.className = 'property-price-bubble'
+      priceEl.textContent = formatPrice(property.price)
+      priceEl.style.cssText = `
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-8px);
+        background: white;
+        color: #0a0a0a;
+        padding: 6px 12px;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+      `
+      el.appendChild(priceEl)
+
+      // Hover effects
+      el.addEventListener('mouseenter', () => {
+        el.style.transform = 'scale(1.3)'
+        el.style.zIndex = '1000'
+        priceEl.style.opacity = '1'
+        priceEl.style.transform = 'translateX(-50%) translateY(-12px)'
+        setHoveredProperty(property)
+        
+        // Smooth zoom to property
+        map.current?.easeTo({
+          center: [property.lng!, property.lat!],
+          zoom: Math.min(map.current.getZoom() + 1, 18),
+          duration: 500,
+        })
+      })
+
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = 'scale(1)'
+        el.style.zIndex = '1'
+        priceEl.style.opacity = '0'
+        priceEl.style.transform = 'translateX(-50%) translateY(-8px)'
+        setHoveredProperty(null)
+      })
+
+      // Click handler
+      el.addEventListener('click', () => {
+        if (onPropertyClick) {
+          onPropertyClick(property)
+        }
+
+        map.current?.flyTo({
+          center: [property.lng!, property.lat!],
+          zoom: 15,
+          duration: 2000,
+        })
+      })
+
+      // Create marker
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat([property.lng, property.lat])
+        .addTo(map.current)
+
+      markers.push(marker)
+    })
+
+    return () => {
+      markers.forEach(marker => marker.remove())
 }
+  }, [mapLoaded, properties, onPropertyClick])
 
-function Ground() {
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]} receiveShadow>
-      <planeGeometry args={[50, 50]} />
-      <meshStandardMaterial
-        color="#0A1628"
-        metalness={0.9}
-        roughness={0.1}
-      />
-    </mesh>
-  )
-}
-
-function Scene() {
-  const buildings = [
-    { position: [-3, 0, -2] as [number, number, number], height: 3 },
-    { position: [-1, 0, -3] as [number, number, number], height: 5 },
-    { position: [1, 0, -2] as [number, number, number], height: 4 },
-    { position: [3, 0, -3] as [number, number, number], height: 6 },
-    { position: [-2, 0, 1] as [number, number, number], height: 2 },
-    { position: [0, 0, 0] as [number, number, number], height: 7 },
-    { position: [2, 0, 1] as [number, number, number], height: 3 },
-    { position: [-4, 0, -4] as [number, number, number], height: 4 },
-    { position: [4, 0, -4] as [number, number, number], height: 5 },
-  ]
-
-  return (
-    <>
-      <PerspectiveCamera makeDefault position={[8, 8, 8]} fov={50} />
-      <OrbitControls
-        enableZoom={false}
-        enablePan={false}
-        autoRotate
-        autoRotateSpeed={0.5}
-        maxPolarAngle={Math.PI / 2.5}
-        minPolarAngle={Math.PI / 4}
-      />
-      
-      <ambientLight intensity={0.2} />
-      <directionalLight
-        position={[10, 20, 10]}
-        intensity={1}
-        castShadow
-        shadow-mapSize={[2048, 2048]}
-      />
-      <pointLight position={[0, 10, 0]} color="#D4AF37" intensity={2} />
-      <pointLight position={[-5, 5, 5]} color="#7C3AED" intensity={1} />
-      <pointLight position={[5, 5, -5]} color="#06B6D4" intensity={1} />
-
-      <Ground />
-      
-      {buildings.map((b, i) => (
-        <Building key={i} position={b.position} height={b.height} delay={i} />
-      ))}
-
-      <fog attach="fog" args={['#0A1628', 10, 30]} />
-    </>
-  )
-}
-
-export function Map3D() {
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-      className="absolute inset-0 -z-10"
+      transition={{ duration: 0.8 }}
+      className="relative w-full h-full rounded-2xl overflow-hidden bg-[#111111]"
     >
-      <Canvas shadows dpr={[1, 2]}>
-        <Suspense fallback={null}>
-          <Scene />
-        </Suspense>
-      </Canvas>
-      
-      {/* Overlay gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--navy)]/50 to-[var(--navy)]" />
+      <div ref={mapContainer} className="w-full h-full" />
+
+      {/* Loading overlay */}
+      {!mapLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center bg-[#0a0a0a]">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+            <p className="text-[#a0a0a0]">Načítání mapy...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Hovered property info */}
+      <AnimatePresence>
+        {hoveredProperty && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="absolute top-4 left-4 bg-[#161616] rounded-2xl p-4 max-w-xs border border-[#111111]"
+          >
+            <p className="text-[#f5f5f5] font-bold mb-1">{hoveredProperty.title}</p>
+            <p className="text-[#a0a0a0] text-sm">{hoveredProperty.address}</p>
+            <p className="text-indigo-400 font-semibold mt-2">
+              {formatPrice(hoveredProperty.price)}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }

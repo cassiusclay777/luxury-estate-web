@@ -3,28 +3,42 @@
 export type InteriorStyle =
   | 'modern'
   | 'minimalist'
-  | 'industrial'
   | 'scandinavian'
+  | 'industrial'
   | 'classic'
+  | 'contemporary'
   | 'loft'
-  | 'rustic'
-  | 'contemporary';
+  | 'rustic';
+
+export type RoomType =
+  | 'living_room'
+  | 'bedroom'
+  | 'kitchen'
+  | 'bathroom'
+  | 'office'
+  | 'dining_room';
 
 export interface StagingRequest {
-  imageUrl: string;
+  imageBase64: string;
   style: InteriorStyle;
-  prompt?: string;
+  roomType?: RoomType;
   propertyId?: string;
+  strength?: number;
+  guidanceScale?: number;
 }
 
 export interface StagingResponse {
   success: boolean;
   imageUrl?: string;
+  provider?: 'huggingface' | 'replicate' | 'pollinations';
+  warning?: string;
   error?: string;
   metadata?: {
     requestId: string;
     timestamp: string;
     processingTime?: number;
+    style?: InteriorStyle;
+    roomType?: RoomType;
   };
 }
 
@@ -34,7 +48,19 @@ export interface StagingLog {
   originalImageUrl: string;
   generatedImageUrl: string;
   style: InteriorStyle;
-  prompt?: string;
+  roomType?: RoomType;
   propertyId?: string;
   userId?: string;
+  provider?: string;
+}
+
+export interface StyleOption {
+  id: InteriorStyle;
+  name: string;
+  description: string;
+}
+
+export interface RoomTypeOption {
+  id: RoomType;
+  name: string;
 }

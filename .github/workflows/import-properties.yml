@@ -1,0 +1,18 @@
+name: Import Properties from Sreality
+
+on:
+  schedule:
+    # Run every day at 3 AM UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger import API
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            https://your-domain.com/api/cron/import-properties

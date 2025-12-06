@@ -6,75 +6,100 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       properties: {
         Row: {
-          id: string
-          title: string
-          description: string | null
-          price: number
           address: string
-          city: string
-          bedrooms: number | null
-          bathrooms: number | null
           area: number | null
-          images: string[]
+          bathrooms: number | null
+          bedrooms: number | null
+          city: string
+          created_at: string | null
+          description: string | null
+          features: string[] | null
+          id: string
+          images: string[] | null
           lat: number | null
           lng: number | null
-          features: string[] | null
-          type: string | null
-          status: string | null
+          main_image: string | null
+          price: number
           published: boolean | null
           slug: string | null
-          main_image: string | null
-          created_at: string
-          updated_at: string
+          status: string | null
+          title: string
+          type: string | null
+          updated_at: string | null
         }
         Insert: {
-          id?: string
-          title: string
-          description?: string | null
-          price: number
           address: string
-          city: string
-          bedrooms?: number | null
-          bathrooms?: number | null
           area?: number | null
-          images?: string[]
+          bathrooms?: number | null
+          bedrooms?: number | null
+          city: string
+          created_at?: string | null
+          description?: string | null
+          features?: string[] | null
+          id?: string
+          images?: string[] | null
           lat?: number | null
           lng?: number | null
-          features?: string[] | null
-          type?: string | null
-          status?: string | null
+          main_image?: string | null
+          price: number
           published?: boolean | null
           slug?: string | null
-          main_image?: string | null
-          created_at?: string
-          updated_at?: string
+          status?: string | null
+          title: string
+          type?: string | null
+          updated_at?: string | null
         }
         Update: {
-          id?: string
-          title?: string
-          description?: string | null
-          price?: number
           address?: string
-          city?: string
-          bedrooms?: number | null
-          bathrooms?: number | null
           area?: number | null
-          images?: string[]
+          bathrooms?: number | null
+          bedrooms?: number | null
+          city?: string
+          created_at?: string | null
+          description?: string | null
+          features?: string[] | null
+          id?: string
+          images?: string[] | null
           lat?: number | null
           lng?: number | null
-          features?: string[] | null
-          type?: string | null
-          status?: string | null
+          main_image?: string | null
+          price?: number
           published?: boolean | null
           slug?: string | null
-          main_image?: string | null
-          created_at?: string
-          updated_at?: string
+          status?: string | null
+          title?: string
+          type?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -83,62 +108,52 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      search_properties: {
-        Args: {
-          search_query: string
-        }
+      nearby_properties: {
+        Args: { radius_km?: number; user_lat: number; user_lng: number }
         Returns: {
-          id: string
-          title: string
-          description: string | null
-          price: number
           address: string
+          area: number
+          bathrooms: number
+          bedrooms: number
           city: string
-          bedrooms: number | null
-          bathrooms: number | null
-          area: number | null
+          description: string
+          distance_km: number
+          features: string[]
+          id: string
           images: string[]
-          lat: number | null
-          lng: number | null
-          features: string[] | null
-          type: string | null
-          status: string | null
-          published: boolean | null
-          slug: string | null
-          main_image: string | null
-          created_at: string
-          updated_at: string
-          rank: number
+          lat: number
+          lng: number
+          main_image: string
+          price: number
+          published: boolean
+          slug: string
+          status: string
+          title: string
+          type: string
         }[]
       }
-      nearby_properties: {
-        Args: {
-          user_lat: number
-          user_lng: number
-          radius_km?: number
-        }
+      search_properties: {
+        Args: { search_query: string }
         Returns: {
-          id: string
-          title: string
-          description: string | null
-          price: number
           address: string
+          area: number
+          bathrooms: number
+          bedrooms: number
           city: string
-          bedrooms: number | null
-          bathrooms: number | null
-          area: number | null
+          description: string
+          features: string[]
+          id: string
           images: string[]
-          lat: number | null
-          lng: number | null
-          features: string[] | null
-          type: string | null
-          status: string | null
-          published: boolean | null
-          slug: string | null
-          main_image: string | null
-          created_at: string
-          updated_at: string
-          distance_km: number
+          lat: number
+          lng: number
+          main_image: string
+          price: number
+          published: boolean
+          rank: number
+          slug: string
+          status: string
+          title: string
+          type: string
         }[]
       }
     }
@@ -150,3 +165,130 @@ export interface Database {
     }
   }
 }
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
+  public: {
+    Enums: {},
+  },
+} as const
+
