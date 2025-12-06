@@ -104,7 +104,7 @@ export function AboutSection() {
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                 <div className="relative">
                   <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-[var(--gold)] via-[var(--purple-light)] to-[var(--cyan)] flex items-center justify-center text-4xl font-bold text-white">
-                    PN
+                    PJ
                   </div>
                   <div className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-[var(--navy)] border-4 border-[var(--navy-dark)] flex items-center justify-center">
                     <Globe className="w-5 h-5 text-[var(--gold)]" />
