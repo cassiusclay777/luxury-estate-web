@@ -1,120 +1,125 @@
-// /src/components/sections/Hero.tsx
 'use client'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { useRef } from 'react'
-import { Map3D } from '@/components/three/Map3D'
+import { motion, useInView } from 'framer-motion'
+import { useRef, useEffect, useState } from 'react'
 import { SearchBar } from '@/components/ui/SearchBar'
-import { Sparkles, ArrowDown, Play } from 'lucide-react'
+import { ArrowDown } from 'lucide-react'
+import Image from 'next/image'
+
+function Counter({ end, duration = 2 }: { end: number; duration?: number }) {
+  const [count, setCount] = useState(0)
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-100px' })
+
+  useEffect(() => {
+    if (!isInView) return
+
+    let startTime: number | null = null
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp
+      const progress = Math.min((timestamp - startTime) / (duration * 1000), 1)
+
+      const easeOut = 1 - Math.pow(1 - progress, 3)
+      setCount(Math.floor(easeOut * end))
+
+      if (progress < 1) {
+        requestAnimationFrame(animate)
+      }
+    }
+
+    requestAnimationFrame(animate)
+  }, [isInView, end, duration])
+
+  return <span ref={ref}>{count.toLocaleString('cs-CZ')}</span>
+}
 
 export function Hero() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start']
-  })
-
-  const y = useTransform(scrollYProgress, [0, 1], [0, 200])
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8])
-
   return (
-    <section ref={containerRef} className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
-      <Map3D />
-      
-      <motion.div
-        style={{ y, opacity, scale }}
-        className="relative z-10 max-w-6xl mx-auto px-6 text-center"
-      >
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8"
-        >
-          <Sparkles className="w-4 h-4 text-[var(--gold)]" />
-          <span className="text-sm text-white/80">Nová éra hledání nemovitostí</span>
-          <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-        </motion.div>
+    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+      {/* Full-width background image with dark overlay */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2940&auto=format&fit=crop"
+          alt="Luxusní nemovitost"
+          fill
+          priority
+          className="object-cover"
+          quality={90}
+        />
+        <div className="absolute inset-0 bg-black/65" />
+      </div>
 
+      {/* Content */}
+      <div className="relative z-10 max-w-6xl mx-auto px-6 text-center pt-32 pb-20">
         {/* Main heading */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="text-5xl md:text-7xl lg:text-8xl font-bold font-['Syne'] leading-tight mb-6"
+          transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+          className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[0.95] mb-8 text-[#f5f5f5]"
         >
-          <span className="text-white">Objevte svůj</span>
-          <br />
-          <span className="text-gradient">vysněný domov</span>
+          Objevte svůj<br />vysněný domov
         </motion.h1>
 
         {/* Subtitle */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-          className="text-xl md:text-2xl text-white/60 max-w-2xl mx-auto mb-12"
+          transition={{ delay: 0.2, duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+          className="text-xl md:text-2xl text-[#a0a0a0] max-w-2xl mx-auto mb-12"
         >
-          Prozkoumejte nejexkluzivnější nemovitosti s revolučním 3D zážitkem.
-          Budoucnost bydlení začíná právě teď.
+          Nejprestižnější nemovitosti na jednom místě
         </motion.p>
 
         {/* Search bar */}
-        <SearchBar />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+        >
+          <SearchBar />
+        </motion.div>
 
-        {/* Stats */}
+        {/* Stats with counter animation */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.8 }}
-          className="flex flex-wrap justify-center gap-8 md:gap-16 mt-16"
+          transition={{ delay: 0.6, duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+          className="grid grid-cols-3 gap-8 md:gap-16 mt-20 max-w-3xl mx-auto"
         >
-          {[
-            { value: '2,500+', label: 'Prémiových nemovitostí' },
-            { value: '500+', label: 'Spokojených klientů' },
-            { value: '€2.5B', label: 'Celková hodnota' },
-          ].map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              whileHover={{ scale: 1.05, y: -5 }}
-              className="text-center"
-            >
-              <p className="text-4xl md:text-5xl font-bold text-gradient mb-2">{stat.value}</p>
-              <p className="text-white/50 text-sm">{stat.label}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Video CTA */}
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="mt-12 inline-flex items-center gap-3 px-6 py-3 rounded-full glass group"
-        >
-          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[var(--gold)] to-[var(--purple-light)] flex items-center justify-center group-hover:scale-110 transition-transform">
-            <Play className="w-5 h-5 text-white fill-white ml-1" />
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-bold text-[#f5f5f5] font-mono tabular-nums mb-2">
+              <Counter end={2847} />+
+            </div>
+            <div className="text-sm md:text-base text-[#a0a0a0]">Nemovitostí</div>
           </div>
-          <span className="text-white/80">Prohlédnout video</span>
-        </motion.button>
-      </motion.div>
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-bold text-[#f5f5f5] font-mono tabular-nums mb-2">
+              <Counter end={12} />M Kč
+            </div>
+            <div className="text-sm md:text-base text-[#a0a0a0]">Průměrná cena</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-bold text-[#f5f5f5] font-mono tabular-nums mb-2">
+              <Counter end={1523} />+
+            </div>
+            <div className="text-sm md:text-base text-[#a0a0a0]">Spokojení klienti</div>
+          </div>
+        </motion.div>
+      </div>
 
       {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        transition={{ delay: 1, duration: 0.8 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
       >
         <motion.div
           animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="flex flex-col items-center gap-2 text-white/50"
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="flex flex-col items-center gap-2 text-[#a0a0a0]"
         >
-          <span className="text-sm">Scrollovat</span>
+          <span className="text-sm">Scrollovat dolů</span>
           <ArrowDown className="w-5 h-5" />
         </motion.div>
       </motion.div>

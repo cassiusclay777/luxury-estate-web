@@ -12,3 +12,8 @@ export function formatPrice(price: number): string {
     maximumFractionDigits: 0
   }).format(price)
 }
+
+export function formatPriceShort(price: number): string {
+  const millions = price / 1000000
+  return `${millions.toFixed(2)}M Kč`
+}

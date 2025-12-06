@@ -1,4 +1,3 @@
-// /src/components/map/PropertyMap.tsx
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import maplibregl from 'maplibre-gl'
@@ -24,7 +23,7 @@ export function PropertyMap({ properties, center, zoom = 13, onPropertyClick }: 
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null)
 
-  // Initialize map
+  // Initialize map with satellite style
   useEffect(() => {
     if (!mapContainer.current || map.current) return
 
@@ -32,7 +31,8 @@ export function PropertyMap({ properties, center, zoom = 13, onPropertyClick }: 
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+      // Satellite style - using CARTO Voyager as a cleaner alternative
+      style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
       center: defaultCenter,
       zoom: zoom,
       attributionControl: false,
@@ -54,7 +54,7 @@ export function PropertyMap({ properties, center, zoom = 13, onPropertyClick }: 
     markers.current.forEach((marker) => marker.remove())
     markers.current = []
 
-    // Add new markers
+    // Add new markers with white circle + indigo dot design
     properties.forEach((property) => {
       if (!property.lat || !property.lng) return
 
@@ -62,23 +62,33 @@ export function PropertyMap({ properties, center, zoom = 13, onPropertyClick }: 
       const el = document.createElement('div')
       el.className = 'property-marker'
       el.innerHTML = `
-        <div class="marker-content">
-          <div class="marker-price">${(property.price / 1000000).toFixed(1)}M Kč</div>
+        <div class="marker-pin">
+          <div class="marker-pin-inner"></div>
         </div>
+        <div class="marker-price-bubble">${(property.price / 1000000).toFixed(1)}M Kč</div>
       `
 
-      // Add CSS for marker
       el.style.cssText = `
         cursor: pointer;
-        transition: transform 0.2s;
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       `
 
       el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.1)'
+        el.style.transform = 'scale(1.15) translateY(-4px)'
+        const bubble = el.querySelector('.marker-price-bubble') as HTMLElement
+        if (bubble) {
+          bubble.style.opacity = '1'
+          bubble.style.transform = 'translateY(-8px) scale(1)'
+        }
       })
 
       el.addEventListener('mouseleave', () => {
-        el.style.transform = 'scale(1)'
+        el.style.transform = 'scale(1) translateY(0)'
+        const bubble = el.querySelector('.marker-price-bubble') as HTMLElement
+        if (bubble && !selectedProperty || selectedProperty.id !== property.id) {
+          bubble.style.opacity = '0'
+          bubble.style.transform = 'translateY(0) scale(0.9)'
+        }
       })
 
       const marker = new maplibregl.Marker({
@@ -140,9 +150,9 @@ export function PropertyMap({ properties, center, zoom = 13, onPropertyClick }: 
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #06B6D4;
+            background: #6366f1;
             border: 3px solid white;
-            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
           "></div>
         `
 
@@ -175,35 +185,61 @@ export function PropertyMap({ properties, center, zoom = 13, onPropertyClick }: 
       <style jsx global>{`
         .property-marker {
           position: relative;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
 
-        .marker-content {
+        .marker-pin {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
           position: relative;
+          z-index: 1;
         }
 
-        .marker-price {
-          background: linear-gradient(135deg, var(--gold), var(--purple-light));
-          color: white;
-          padding: 6px 12px;
-          border-radius: 20px;
+        .marker-pin-inner {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #6366f1;
+        }
+
+        .marker-price-bubble {
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+          transform: translateX(-50%) translateY(0) scale(0.9);
+          background: white;
+          color: #0a0a0a;
+          padding: 8px 14px;
+          border-radius: 999px;
           font-weight: 600;
           font-size: 13px;
           white-space: nowrap;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-          border: 2px solid rgba(255, 255, 255, 0.2);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          opacity: 0;
+          pointer-events: none;
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          margin-bottom: 8px;
         }
 
-        .marker-content::after {
+        .marker-price-bubble::after {
           content: '';
           position: absolute;
-          bottom: -8px;
+          top: 100%;
           left: 50%;
           transform: translateX(-50%);
           width: 0;
           height: 0;
-          border-left: 8px solid transparent;
-          border-right: 8px solid transparent;
-          border-top: 8px solid var(--purple-light);
+          border-left: 6px solid transparent;
+          border-right: 6px solid transparent;
+          border-top: 6px solid white;
         }
       `}</style>
 
@@ -212,9 +248,9 @@ export function PropertyMap({ properties, center, zoom = 13, onPropertyClick }: 
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={handleGetUserLocation}
-        className="absolute top-4 left-4 z-10 w-12 h-12 rounded-full glass flex items-center justify-center glow-gold"
+        className="absolute top-4 left-4 z-10 w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg hover:shadow-indigo-glow transition-shadow"
       >
-        <Navigation className="w-5 h-5" />
+        <Navigation className="w-5 h-5 text-gray-900" />
       </motion.button>
 
       {/* Selected Property Card */}
@@ -224,13 +260,14 @@ export function PropertyMap({ properties, center, zoom = 13, onPropertyClick }: 
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
             className="absolute bottom-4 left-4 right-4 md:left-auto md:w-96 z-10"
           >
-            <div className="glass rounded-2xl overflow-hidden">
+            <div className="bg-[#161616] rounded-2xl overflow-hidden shadow-xl">
               {/* Property Image */}
               <div className="relative h-48">
                 <Image
-                  src={selectedProperty.images[0] || '/placeholder.jpg'}
+                  src={selectedProperty.images?.[0] || '/placeholder.jpg'}
                   alt={selectedProperty.title}
                   fill
                   className="object-cover"
@@ -248,13 +285,13 @@ export function PropertyMap({ properties, center, zoom = 13, onPropertyClick }: 
               {/* Property Info */}
               <div className="p-4 space-y-3">
                 <div>
-                  <h3 className="text-xl font-bold text-white mb-1">
+                  <h3 className="text-xl font-bold text-text-primary mb-1">
                     {selectedProperty.title}
                   </h3>
-                  <p className="text-white/60 text-sm">{selectedProperty.address}</p>
+                  <p className="text-text-secondary text-sm">{selectedProperty.address}</p>
                 </div>
 
-                <div className="flex items-center gap-4 text-sm text-white/80">
+                <div className="flex items-center gap-4 text-sm text-text-secondary">
                   {selectedProperty.bedrooms && (
                     <div className="flex items-center gap-1">
                       <Bed className="w-4 h-4" />
@@ -277,14 +314,14 @@ export function PropertyMap({ properties, center, zoom = 13, onPropertyClick }: 
 
                 <div className="flex items-center justify-between pt-3 border-t border-white/10">
                   <div>
-                    <div className="text-sm text-white/60">Cena</div>
-                    <div className="text-2xl font-bold text-gradient">
+                    <div className="text-sm text-text-secondary">Cena</div>
+                    <div className="text-2xl font-bold text-text-primary tabular-nums">
                       {(selectedProperty.price / 1000000).toFixed(2)}M Kč
                     </div>
                   </div>
                   <Link
                     href={`/properties/${selectedProperty.id}`}
-                    className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[var(--gold)] to-[var(--purple-light)] text-white font-semibold flex items-center gap-2 glow-gold"
+                    className="px-6 py-2.5 rounded-full bg-indigo-500 text-white font-semibold flex items-center gap-2 hover:bg-indigo-400 transition-colors"
                   >
                     <Home className="w-4 h-4" />
                     Detail

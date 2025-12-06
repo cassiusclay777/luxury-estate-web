@@ -2,13 +2,17 @@
   "name": "reality-estate-web",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "tsx scripts/seed-properties.ts"
+    "seed": "tsx scripts/seed-properties.ts",
+    "test:db": "tsx scripts/test-db-connection.ts",
+    "test:mongodb": "tsx scripts/test-mongodb-connection.ts",
+    "mongodb:demo": "tsx scripts/getting-started-mongodb.ts",
+    "import:sreality": "tsx scripts/import-sreality.ts",
+    "import:sreality:watch": "node --watch scripts/import-sreality.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.77",
@@ -17,6 +21,7 @@
     "@react-three/fiber": "^8.18.0",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.39.3",
+    "@types/xml2js": "^0.4.14",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "dotenv": "^17.2.3",
@@ -25,16 +30,21 @@
     "lenis": "^1.0.42",
     "lucide-react": "^0.309.0",
     "maplibre-gl": "^4.0.0",
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.0.1",
     "next": "^14.2.33",
     "openai": "^6.10.0",
+    "pg": "^8.16.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "replicate": "^1.4.0",
     "tailwind-merge": "^2.2.0",
-    "three": "^0.160.0"
+    "three": "^0.160.0",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/pg": "^8.15.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/three": "^0.160.0",
@@ -42,8 +52,9 @@
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "postcss": "^8",
+    "supabase": "^2.65.6",
     "tailwindcss": "^3.4.18",
-    "tsx": "^4.7.0",
+    "tsx": "^4.21.0",
     "typescript": "5.9.3"
   }
 }
