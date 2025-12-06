@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, MapPin, SlidersHorizontal, X, Loader2 } from 'lucide-react'
 import { searchProperties, searchNearbyProperties, getSearchSuggestions, type SearchFilters } from '@/app/actions/properties'
-import type { Database } from '@/types/database.types'
+import type { Database } from 'types/database.types'
 
 type Property = Database['public']['Tables']['properties']['Row']
 
@@ -82,15 +82,12 @@ export function AdvancedSearch({ onResults, onViewModeChange, viewMode = 'grid' 
             lat: position.coords.latitude,
             lng: position.coords.longitude,
             radiusKm,
-            minPrice: filters.minPrice,
-            maxPrice: filters.maxPrice,
-            bedrooms: filters.bedrooms,
-            bathrooms: filters.bathrooms,
-            propertyType: filters.propertyType,
           })
 
           if (!error && onResults) {
-            onResults(properties)
+            // Convert NearbyResult[] to Property[] by removing distance_km
+            const convertedProperties = properties.map(({ distance_km, ...property }) => property as Property);
+            onResults(convertedProperties)
           }
           setIsGeolocationLoading(false)
         },
@@ -104,7 +101,7 @@ export function AdvancedSearch({ onResults, onViewModeChange, viewMode = 'grid' 
       console.error('Geolocation error:', error)
       setIsGeolocationLoading(false)
     }
-  }, [radiusKm, filters, onResults])
+  }, [radiusKm, onResults])
 
   // Trigger search on Enter
   const handleKeyPress = (e: React.KeyboardEvent) => {

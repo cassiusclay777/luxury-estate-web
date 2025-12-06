@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Bed, Bath, Maximize, MapPin, Heart } from 'lucide-react'
-import type { Database } from '@/types/database.types'
+import type { Database } from 'types/database.types'
 import { useState } from 'react'
 
 type Property = Database['public']['Tables']['properties']['Row']
@@ -32,9 +32,9 @@ export function PropertyCard({ property }: PropertyCardProps) {
           />
 
           {/* Type Badge */}
-          {property.property_type && (
+          {property.type && (
             <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full glass text-sm font-semibold">
-              {property.property_type}
+              {property.type}
             </div>
           )}
 
@@ -84,10 +84,10 @@ export function PropertyCard({ property }: PropertyCardProps) {
                 <span>{property.bathrooms}</span>
               </div>
             )}
-            {property.sqft && (
+            {property.area && (
               <div className="flex items-center gap-1.5">
                 <Maximize className="w-4 h-4" />
-                <span>{property.sqft} m²</span>
+                <span>{property.area} m²</span>
               </div>
             )}
           </div>
@@ -95,7 +95,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
           {/* Features */}
           {property.features && property.features.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {property.features.slice(0, 3).map((feature, i) => (
+              {property.features?.slice(0, 3).map((feature: string, i: number) => (
                 <span
                   key={i}
                   className="px-3 py-1 rounded-full bg-white/5 text-xs text-white/60"

@@ -8,16 +8,10 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
-      // AI Virtual Staging - Replicate CDN
+      // AI Virtual Staging - Pollinations.ai (FREE!)
       {
         protocol: 'https',
-        hostname: 'replicate.delivery',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'pbxt.replicate.delivery',
+        hostname: 'image.pollinations.ai',
         port: '',
         pathname: '/**',
       },

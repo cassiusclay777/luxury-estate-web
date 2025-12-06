@@ -18,12 +18,16 @@ CREATE TABLE IF NOT EXISTS properties (
   city TEXT NOT NULL,
   bedrooms INTEGER,
   bathrooms INTEGER,
-  sqft INTEGER,
+  area NUMERIC, -- in m² (changed from sqft)
   images TEXT[] DEFAULT '{}',
   lat NUMERIC,
   lng NUMERIC,
   features TEXT[],
-  property_type TEXT,
+  type TEXT, -- changed from property_type to match API
+  status TEXT DEFAULT 'sale', -- 'sale', 'rent', 'sold'
+  published BOOLEAN DEFAULT true,
+  slug TEXT UNIQUE,
+  main_image TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -31,7 +35,10 @@ CREATE TABLE IF NOT EXISTS properties (
 -- Create indexes for performance
 CREATE INDEX IF NOT EXISTS idx_properties_city ON properties(city);
 CREATE INDEX IF NOT EXISTS idx_properties_price ON properties(price);
-CREATE INDEX IF NOT EXISTS idx_properties_property_type ON properties(property_type);
+CREATE INDEX IF NOT EXISTS idx_properties_type ON properties(type);
+CREATE INDEX IF NOT EXISTS idx_properties_status ON properties(status);
+CREATE INDEX IF NOT EXISTS idx_properties_published ON properties(published);
+CREATE INDEX IF NOT EXISTS idx_properties_slug ON properties(slug);
 CREATE INDEX IF NOT EXISTS idx_properties_lat ON properties(lat);
 CREATE INDEX IF NOT EXISTS idx_properties_lng ON properties(lng);
 
@@ -56,12 +63,16 @@ RETURNS TABLE (
   city TEXT,
   bedrooms INTEGER,
   bathrooms INTEGER,
-  sqft INTEGER,
+  area NUMERIC,
   images TEXT[],
   lat NUMERIC,
   lng NUMERIC,
   features TEXT[],
-  property_type TEXT,
+  type TEXT,
+  status TEXT,
+  published BOOLEAN,
+  slug TEXT,
+  main_image TEXT,
   rank REAL
 ) AS $$
 BEGIN
@@ -75,12 +86,16 @@ BEGIN
     p.city,
     p.bedrooms,
     p.bathrooms,
-    p.sqft,
+    p.area,
     p.images,
     p.lat,
     p.lng,
     p.features,
-    p.property_type,
+    p.type,
+    p.status,
+    p.published,
+    p.slug,
+    p.main_image,
     ts_rank(
       to_tsvector('simple', coalesce(p.title, '') || ' ' || coalesce(p.description, '') || ' ' || coalesce(p.address, '') || ' ' || coalesce(p.city, '')),
       plainto_tsquery('simple', search_query)
@@ -112,12 +127,16 @@ RETURNS TABLE (
   city TEXT,
   bedrooms INTEGER,
   bathrooms INTEGER,
-  sqft INTEGER,
+  area NUMERIC,
   images TEXT[],
   lat NUMERIC,
   lng NUMERIC,
   features TEXT[],
-  property_type TEXT,
+  type TEXT,
+  status TEXT,
+  published BOOLEAN,
+  slug TEXT,
+  main_image TEXT,
   distance_km NUMERIC
 ) AS $$
 BEGIN
@@ -131,12 +150,16 @@ BEGIN
     p.city,
     p.bedrooms,
     p.bathrooms,
-    p.sqft,
+    p.area,
     p.images,
     p.lat,
     p.lng,
     p.features,
-    p.property_type,
+    p.type,
+    p.status,
+    p.published,
+    p.slug,
+    p.main_image,
     (
       6371 * acos(
         cos(radians(user_lat)) * cos(radians(p.lat::float8)) *
@@ -196,7 +219,70 @@ CREATE POLICY "Allow authenticated delete" ON properties
   USING (auth.role() = 'authenticated' OR auth.role() = 'service_role');
 
 -- Sample data (optional - remove if using seed script)
-INSERT INTO properties (title, price, address, city, bedrooms, bathrooms, sqft, images, lat, lng, property_type, features) VALUES
-('Luxusní penthouse s výhledem', 25000000, 'Pařížská 15', 'Praha 1', 4, 3, 280, ARRAY['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800'], 50.0875, 14.4213, 'Penthouse', ARRAY['terasa', 'výtah', 'garáž']),
-('Moderní vila s bazénem', 45000000, 'Na Vyhlídce 8', 'Praha 6', 6, 4, 450, ARRAY['https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800'], 50.0755, 14.4378, 'Vila', ARRAY['bazén', 'zahrada', 'smart home'])
+INSERT INTO properties (title, description, price, address, city, bedrooms, bathrooms, area, images, lat, lng, type, status, features, slug, main_image) VALUES
+(
+  'Luxusní penthouse s výhledem',
+  'Nádherný penthouse v centru Prahy s výhledem na Pražský hrad. Kompletně zařízený, s privátní terasou 80m² a dvěma parkovacími místy.',
+  25000000,
+  'Pařížská 15',
+  'Praha 1',
+  4,
+  3,
+  280,
+  ARRAY[
+    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800',
+    'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800'
+  ],
+  50.0875,
+  14.4213,
+  'apartment',
+  'sale',
+  ARRAY['terasa', 'výtah', 'garáž', 'klimatizace', 'smart home'],
+  'luxusni-penthouse-vyhledem-praha',
+  'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800'
+),
+(
+  'Moderní vila s bazénem',
+  'Architektonicky unikátní vila s infinity bazénem, wellness zónou a panoramatickým výhledem. Pozemek 1200m².',
+  45000000,
+  'Na Vyhlídce 8',
+  'Praha 6',
+  6,
+  4,
+  450,
+  ARRAY[
+    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800',
+    'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800',
+    'https://images.unsplash.com/photo-1613553507747-5f8d62ad5904?w=800'
+  ],
+  50.0755,
+  14.4378,
+  'house',
+  'sale',
+  ARRAY['bazén', 'zahrada', 'garáž', 'wellness', 'vinný sklep', 'smart home'],
+  'moderni-vila-bazen-praha6',
+  'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800'
+),
+(
+  'Investiční byt 2+kk',
+  'Nový byt v developerském projektu s vysokou návratností investice. Dokončení Q2 2024. Vhodný pro pronájem.',
+  4200000,
+  'Lidická 25',
+  'Brno',
+  2,
+  1,
+  55,
+  ARRAY[
+    'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800',
+    'https://images.unsplash.com/photo-1560448075-cbc16bb4af8e?w=800'
+  ],
+  49.1951,
+  16.6068,
+  'apartment',
+  'sale',
+  ARRAY['balkon', 'sklep', 'parkování'],
+  'investicni-byt-2kk-brno',
+  'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800'
+)
 ON CONFLICT DO NOTHING;

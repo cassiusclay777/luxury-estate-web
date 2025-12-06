@@ -1,203 +1,259 @@
-import { createClient } from '@supabase/supabase-js'
-import { config } from 'dotenv'
-import { resolve } from 'path'
+import { createClient } from '@supabase/supabase-js';
+import 'dotenv/config';
 
-// Load .env.local file
-config({ path: resolve(process.cwd(), '.env.local') })
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY! // Use service role for admin operations
-
-if (!supabaseUrl || !supabaseKey) {
-  console.error('❌ Missing Supabase credentials!')
-  console.error('Please ensure .env.local contains:')
-  console.error('  NEXT_PUBLIC_SUPABASE_URL=your_url')
-  console.error('  SUPABASE_SERVICE_ROLE_KEY=your_service_role_key')
-  process.exit(1)
-}
-
-const supabase = createClient(supabaseUrl, supabaseKey)
-
-interface RawProperty {
-  id?: string
-  name: string
-  description?: string
-  price: number
-  location: {
-    address: string
-    city: string
-    district?: string
-    lat: number
-    lng: number
+const sampleProperties = [
+  {
+    title: 'Luxusní penthouse s terasou',
+    description: 'Nádherný penthouse v centru Prahy s výhledem na Pražský hrad. Kompletně zařízený, s privátní terasou 80m² a dvěma parkovacími místy.',
+    price: 15900000,
+    address: 'Pařížská 15',
+    city: 'Praha 1',
+    bedrooms: 3,
+    bathrooms: 2,
+    area: 180,
+    type: 'apartment',
+    status: 'sale',
+    published: true,
+    features: ['Terasa', 'Parkování', 'Výtah', 'Klimatizace', 'Smart Home'],
+    images: [
+      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
+      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800',
+      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800'
+    ],
+    lat: 50.0875,
+    lng: 14.4213,
+    slug: 'luxusni-penthouse-terasa-praha1'
+  },
+  {
+    title: 'Moderní vila s bazénem',
+    description: 'Architektonicky unikátní vila s infinity bazénem, wellness zónou a panoramatickým výhledem. Pozemek 1200m².',
+    price: 42500000,
+    address: 'Na Vyhlídce 8',
+    city: 'Praha 6',
+    bedrooms: 5,
+    bathrooms: 4,
+    area: 420,
+    type: 'house',
+    status: 'sale',
+    published: true,
+    features: ['Bazén', 'Zahrada', 'Garáž', 'Wellness', 'Vinný sklep', 'Smart Home'],
+    images: [
+      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800',
+      'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800',
+      'https://images.unsplash.com/photo-1613553507747-5f8d62ad5904?w=800'
+    ],
+    lat: 50.0755,
+    lng: 14.4378,
+    slug: 'moderni-vila-bazen-praha6'
+  },
+  {
+    title: 'Investiční byt 2+kk',
+    description: 'Nový byt v developerském projektu s vysokou návratností investice. Dokončení Q2 2024. Vhodný pro pronájem.',
+    price: 4200000,
+    address: 'Lidická 25',
+    city: 'Brno',
+    bedrooms: 2,
+    bathrooms: 1,
+    area: 55,
+    type: 'apartment',
+    status: 'sale',
+    published: true,
+    features: ['Balkon', 'Sklep', 'Parkování'],
+    images: [
+      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800',
+      'https://images.unsplash.com/photo-1560448075-cbc16bb4af8e?w=800'
+    ],
+    lat: 49.1951,
+    lng: 16.6068,
+    slug: 'investicni-byt-2kk-brno'
+  },
+  {
+    title: 'Rodinný dům se zahradou',
+    description: 'Komfortní rodinný dům v klidné lokalitě s velkou zahradou a dětským hřištěm. Ideální pro rodiny s dětmi.',
+    price: 12500000,
+    address: 'Pod Strání 45',
+    city: 'Brno',
+    bedrooms: 4,
+    bathrooms: 2,
+    area: 180,
+    type: 'house',
+    status: 'sale',
+    published: true,
+    features: ['Zahrada', 'Garáž', 'Sklep', 'Krb'],
+    images: [
+      'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800',
+      'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800'
+    ],
+    lat: 49.2109,
+    lng: 16.6155,
+    slug: 'rodinny-dum-zahrada-brno'
+  },
+  {
+    title: 'Kancelářské prostory',
+    description: 'Moderní kancelářské prostory v business centru. Vhodné pro firmy do 20 zaměstnanců.',
+    price: 8500000,
+    address: 'Pobřežní 34',
+    city: 'Praha 8',
+    bedrooms: null,
+    bathrooms: 3,
+    area: 220,
+    type: 'commercial',
+    status: 'sale',
+    published: true,
+    features: ['Klimatizace', 'Parkování', 'Recepce', 'Meeting room'],
+    images: [
+      'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=800',
+      'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800'
+    ],
+    lat: 50.0974,
+    lng: 14.4376,
+    slug: 'kancelarske-prostory-praha8'
+  },
+  {
+    title: 'Byt k pronájmu v centru',
+    description: 'Elegantní byt 1+kk v historickém centru. Plně zařízený, včetně internetu a energií.',
+    price: 18000,
+    address: 'Karlova 12',
+    city: 'Praha 1',
+    bedrooms: 1,
+    bathrooms: 1,
+    area: 45,
+    type: 'apartment',
+    status: 'rent',
+    published: true,
+    features: ['Vybavený', 'Internet', 'Energie v ceně', 'Výtah'],
+    images: [
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800',
+      'https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=800'
+    ],
+    lat: 50.0865,
+    lng: 14.4176,
+    slug: 'byt-pronajem-praha1'
+  },
+  {
+    title: 'Prodejna v nákupním centru',
+    description: 'Výhodná prodejní plocha v rušném nákupním centru. Vysoká frekvence zákazníků.',
+    price: 9500000,
+    address: 'Nákupní 1',
+    city: 'Ostrava',
+    bedrooms: null,
+    bathrooms: 2,
+    area: 120,
+    type: 'commercial',
+    status: 'sale',
+    published: true,
+    features: ['Vysoká frekvence', 'Parkování', 'Klimatizace'],
+    images: [
+      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800',
+      'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800'
+    ],
+    lat: 49.8209,
+    lng: 18.2625,
+    slug: 'prodejna-ostrava'
+  },
+  {
+    title: 'Luxusní byt s výhledem na řeku',
+    description: 'Prvorepublikový byt s renovovaným interiérem a výhledem na Vltavu. Luxusní vybavení.',
+    price: 28500000,
+    address: 'Rašínovo nábřeží 42',
+    city: 'Praha 2',
+    bedrooms: 4,
+    bathrooms: 3,
+    area: 210,
+    type: 'apartment',
+    status: 'sale',
+    published: true,
+    features: ['Výhled na řeku', 'Parkování', 'Výtah', 'Klimatizace', 'Bezpečnostní systém'],
+    images: [
+      'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800',
+      'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800'
+    ],
+    lat: 50.0745,
+    lng: 14.4158,
+    slug: 'luxusni-byt-vyhled-reka-praha2'
   }
-  details: {
-    bedrooms?: number
-    bathrooms?: number
-    sqft?: number
-    property_type?: string
-  }
-  images: string[]
-  features?: string[]
-}
-
-async function fetchBrnoProperties(): Promise<RawProperty[]> {
-  console.log('📡 Fetching Brno real estate data...')
-
-  try {
-    // Try the Czech real estate dataset
-    const response = await fetch(
-      'https://raw.githubusercontent.com/patrikspacek/czech-real-estate-dataset/main/brno-south-moravia-2025.json'
-    )
-
-    if (response.ok) {
-      const data = await response.json()
-      console.log(`✅ Fetched ${data.length} properties from dataset`)
-      return data
-    }
-  } catch (error) {
-    console.log('⚠️ Dataset not available, using fallback data')
-  }
-
-  // Fallback: Generate sample Brno data
-  return generateBrnoSampleData()
-}
-
-function generateBrnoSampleData(): RawProperty[] {
-  const cities = ['Brno', 'Kuřim', 'Blansko', 'Vyškov', 'Hodonín', 'Znojmo']
-  const districts = ['Brno-střed', 'Brno-sever', 'Brno-jih', 'Vinohrady', 'Žabovřesky', 'Královo Pole']
-  const types = ['Byt', 'Rodinný dům', 'Vila', 'Penthouse', 'Loft']
-  const features = [
-    'Balkon', 'Terasa', 'Sklep', 'Garáž', 'Parkování', 'Výtah',
-    'Klimatizace', 'Nový', 'Po rekonstrukci', 'Ihned k nastěhování'
-  ]
-
-  const properties: RawProperty[] = []
-
-  for (let i = 0; i < 50; i++) {
-    const city = cities[Math.floor(Math.random() * cities.length)]
-    const district = districts[Math.floor(Math.random() * districts.length)]
-    const propertyType = types[Math.floor(Math.random() * types.length)]
-    const bedrooms = Math.floor(Math.random() * 5) + 1
-    const bathrooms = Math.floor(Math.random() * 3) + 1
-    const sqft = Math.floor(Math.random() * 200) + 50
-    const price = Math.floor(Math.random() * 20000000) + 3000000
-
-    // Brno coordinates with some randomization
-    const baseLat = 49.1951
-    const baseLng = 16.6068
-    const lat = baseLat + (Math.random() - 0.5) * 0.1
-    const lng = baseLng + (Math.random() - 0.5) * 0.1
-
-    const selectedFeatures = features
-      .sort(() => Math.random() - 0.5)
-      .slice(0, Math.floor(Math.random() * 5) + 2)
-
-    properties.push({
-      name: `${propertyType} ${bedrooms}+${bathrooms > 1 ? 'kk' : '1'}`,
-      description: `Krásný ${propertyType.toLowerCase()} v klidné části města. Prostorný a světlý byt s moderním vybavením. Výborná dostupnost MHD, obchody a služby v blízkosti.`,
-      price,
-      location: {
-        address: `Ulice ${Math.floor(Math.random() * 100) + 1}`,
-        city,
-        district,
-        lat,
-        lng
-      },
-      details: {
-        bedrooms,
-        bathrooms,
-        sqft,
-        property_type: propertyType
-      },
-      images: [
-        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
-        'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800',
-        'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800'
-      ],
-      features: selectedFeatures
-    })
-  }
-
-  return properties
-}
+];
 
 async function seedDatabase() {
-  console.log('🌱 Starting database seed...')
+  console.log('🚀 Starting database seeding...');
 
-  // Fetch properties
-  const rawProperties = await fetchBrnoProperties()
-
-  // Transform to database schema
-  const properties = rawProperties.map(prop => ({
-    title: prop.name,
-    description: prop.description || null,
-    price: prop.price,
-    address: prop.location.address,
-    city: prop.location.city,
-    bedrooms: prop.details?.bedrooms || null,
-    bathrooms: prop.details?.bathrooms || null,
-    sqft: prop.details?.sqft || null,
-    images: prop.images || [],
-    lat: prop.location.lat,
-    lng: prop.location.lng,
-    features: prop.features || null,
-    property_type: prop.details?.property_type || null
-  }))
-
-  console.log(`📦 Prepared ${properties.length} properties for import`)
-
-  // Check if table is empty
-  const { count } = await supabase
-    .from('properties')
-    .select('*', { count: 'exact', head: true })
-
-  if (count && count > 0) {
-    console.log(`⚠️ Database already contains ${count} properties`)
-    console.log('🧹 Clearing existing data...')
-
-    const { error: deleteError } = await supabase
+  try {
+    // Check if properties table exists and has data
+    const { data: existingProperties, error: checkError } = await supabase
       .from('properties')
-      .delete()
-      .neq('id', '00000000-0000-0000-0000-000000000000') // Delete all
+      .select('id')
+      .limit(1);
 
-    if (deleteError) {
-      console.error('❌ Error clearing data:', deleteError)
-      return
-    }
-  }
-
-  // Insert in batches
-  const batchSize = 100
-  let inserted = 0
-
-  for (let i = 0; i < properties.length; i += batchSize) {
-    const batch = properties.slice(i, i + batchSize)
-
-    const { data, error } = await supabase
-      .from('properties')
-      .insert(batch)
-      .select()
-
-    if (error) {
-      console.error(`❌ Error inserting batch ${i / batchSize + 1}:`, error)
-      continue
+    if (checkError) {
+      console.error('❌ Error checking properties table:', checkError.message);
+      console.log('⚠️  Make sure you have run the SQL schema from supabase-schema.sql first!');
+      return;
     }
 
-    inserted += batch.length
-    console.log(`✅ Inserted ${inserted}/${properties.length} properties`)
-  }
+    // Clear existing data if needed
+    if (existingProperties && existingProperties.length > 0) {
+      console.log(`📊 Found ${existingProperties.length} existing properties`);
+      const shouldClear = process.argv.includes('--clear');
+      
+      if (shouldClear) {
+        console.log('🗑️  Clearing existing properties...');
+        const { error: deleteError } = await supabase
+          .from('properties')
+          .delete()
+          .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all
+        
+        if (deleteError) {
+          console.error('❌ Error clearing properties:', deleteError.message);
+          return;
+        }
+        console.log('✅ Existing properties cleared');
+      } else {
+        console.log('⚠️  Skipping seeding - properties already exist. Use --clear flag to clear and reseed.');
+        return;
+      }
+    }
 
-  console.log('🎉 Database seed completed!')
-  console.log(`📊 Total properties in database: ${inserted}`)
+    // Insert sample properties
+    console.log(`📝 Inserting ${sampleProperties.length} properties...`);
+    
+    for (const property of sampleProperties) {
+      const propertyData = {
+        ...property,
+        main_image: property.images[0] || null
+      };
+
+      const { error: insertError } = await supabase
+        .from('properties')
+        .insert([propertyData]);
+
+      if (insertError) {
+        console.error(`❌ Error inserting property "${property.title}":`, insertError.message);
+      } else {
+        console.log(`✅ Added: ${property.title}`);
+      }
+    }
+
+    console.log('🎉 Database seeding completed successfully!');
+    console.log(`📊 Total properties seeded: ${sampleProperties.length}`);
+
+    // Verify the data
+    const { data: finalCount, error: countError } = await supabase
+      .from('properties')
+      .select('id', { count: 'exact' });
+
+    if (!countError) {
+      console.log(`🔍 Total properties in database: ${finalCount?.length || 0}`);
+    }
+
+  } catch (error) {
+    console.error('❌ Unexpected error during seeding:', error);
+  }
 }
 
-// Run seed
-seedDatabase()
-  .then(() => {
-    console.log('✨ Done!')
-    process.exit(0)
-  })
-  .catch((error) => {
-    console.error('💥 Fatal error:', error)
-    process.exit(1)
-  })
+// Run the seeding
+seedDatabase();

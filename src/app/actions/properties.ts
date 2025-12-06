@@ -56,7 +56,7 @@ export async function searchProperties(filters: SearchFilters) {
         results = results.filter(p => p.bathrooms && p.bathrooms >= filters.bathrooms!)
       }
       if (filters.propertyType) {
-        results = results.filter(p => p.property_type === filters.propertyType)
+        results = results.filter(p => p.type === filters.propertyType)
       }
       if (filters.city) {
         results = results.filter(p => p.city.toLowerCase().includes(filters.city!.toLowerCase()))
@@ -79,7 +79,7 @@ export async function searchProperties(filters: SearchFilters) {
       query = query.gte('bathrooms', filters.bathrooms)
     }
     if (filters.propertyType) {
-      query = query.eq('property_type', filters.propertyType)
+      query = query.eq('type', filters.propertyType)
     }
     if (filters.city) {
       query = query.ilike('city', `%${filters.city}%`)
@@ -179,14 +179,14 @@ export async function getSearchSuggestions(query: string) {
     // Hledej v typech nemovitostí
     const { data: types } = await supabase
       .from('properties')
-      .select('property_type')
-      .ilike('property_type', `%${query}%`)
+      .select('type')
+      .ilike('type', `%${query}%`)
       .limit(5)
 
     const suggestions = [
       ...new Set([
-        ...(cities?.map(c => c.city) || []),
-        ...(types?.map(t => t.property_type).filter(Boolean) || [])
+        ...(cities?.map(c => c.city).filter((city): city is string => city !== null) || []),
+        ...(types?.map(t => t.type).filter((type): type is string => type !== null) || [])
       ])
     ].slice(0, 5)
 

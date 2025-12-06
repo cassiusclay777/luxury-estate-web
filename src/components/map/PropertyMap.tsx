@@ -2,7 +2,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import maplibregl from 'maplibre-gl'
-import type { Database } from '@/types/database.types'
+import type { Database } from 'types/database.types'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Navigation, Home, Bed, Bath, Maximize } from 'lucide-react'
 import Link from 'next/link'
@@ -267,10 +267,10 @@ export function PropertyMap({ properties, center, zoom = 13, onPropertyClick }: 
                       <span>{selectedProperty.bathrooms}</span>
                     </div>
                   )}
-                  {selectedProperty.sqft && (
+                  {selectedProperty.area && (
                     <div className="flex items-center gap-1">
                       <Maximize className="w-4 h-4" />
-                      <span>{selectedProperty.sqft} m²</span>
+                      <span>{selectedProperty.area} m²</span>
                     </div>
                   )}
                 </div>

@@ -316,7 +316,7 @@ function VirtualStagingButton({ propertyId }: { propertyId: string }) {
           className="relative flex items-center justify-center gap-3 text-white font-bold text-lg"
         >
           <Wand2 className="w-6 h-6" />
-          Virtuální staging s AI (Replicate)
+          Virtuální staging s AI (Zdarma)
           <Sparkles className="w-5 h-5" />
         </motion.div>
 

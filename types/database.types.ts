@@ -19,12 +19,16 @@ export interface Database {
           city: string
           bedrooms: number | null
           bathrooms: number | null
-          sqft: number | null
+          area: number | null
           images: string[]
           lat: number | null
           lng: number | null
           features: string[] | null
-          property_type: string | null
+          type: string | null
+          status: string | null
+          published: boolean | null
+          slug: string | null
+          main_image: string | null
           created_at: string
           updated_at: string
         }
@@ -37,12 +41,16 @@ export interface Database {
           city: string
           bedrooms?: number | null
           bathrooms?: number | null
-          sqft?: number | null
+          area?: number | null
           images?: string[]
           lat?: number | null
           lng?: number | null
           features?: string[] | null
-          property_type?: string | null
+          type?: string | null
+          status?: string | null
+          published?: boolean | null
+          slug?: string | null
+          main_image?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -55,12 +63,16 @@ export interface Database {
           city?: string
           bedrooms?: number | null
           bathrooms?: number | null
-          sqft?: number | null
+          area?: number | null
           images?: string[]
           lat?: number | null
           lng?: number | null
           features?: string[] | null
-          property_type?: string | null
+          type?: string | null
+          status?: string | null
+          published?: boolean | null
+          slug?: string | null
+          main_image?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -84,12 +96,18 @@ export interface Database {
           city: string
           bedrooms: number | null
           bathrooms: number | null
-          sqft: number | null
+          area: number | null
           images: string[]
           lat: number | null
           lng: number | null
           features: string[] | null
-          property_type: string | null
+          type: string | null
+          status: string | null
+          published: boolean | null
+          slug: string | null
+          main_image: string | null
+          created_at: string
+          updated_at: string
           rank: number
         }[]
       }
@@ -108,12 +126,18 @@ export interface Database {
           city: string
           bedrooms: number | null
           bathrooms: number | null
-          sqft: number | null
+          area: number | null
           images: string[]
           lat: number | null
           lng: number | null
           features: string[] | null
-          property_type: string | null
+          type: string | null
+          status: string | null
+          published: boolean | null
+          slug: string | null
+          main_image: string | null
+          created_at: string
+          updated_at: string
           distance_km: number
         }[]
       }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateStagedRoom, validateReplicateConfig } from '@/lib/aiStagingClient';
+import { generateStagedRoom, validateHuggingFaceConfig } from '@/lib/huggingfaceClient';
 import { getFullImageUrl } from '@/lib/uploadHandler';
 import { InteriorStyle, StagingLog } from '@/lib/types/ai-staging';
 import { writeFile, mkdir } from 'fs/promises';
@@ -14,12 +14,12 @@ export async function POST(request: NextRequest) {
   const startTime = Date.now();
 
   try {
-    // Validate Replicate API is configured
-    if (!validateReplicateConfig()) {
+    // Validate Hugging Face API is configured
+    if (!validateHuggingFaceConfig()) {
       return NextResponse.json(
         {
           success: false,
-          error: 'AI služba není nakonfigurována. Kontaktujte administrátora.'
+          error: 'AI služba není nakonfigurována. Nastavte HUGGINGFACE_API_TOKEN v .env.local'
         },
         { status: 500 }
       );
