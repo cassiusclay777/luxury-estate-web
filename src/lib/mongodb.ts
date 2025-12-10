@@ -13,10 +13,18 @@ if (!MONGODB_URI) {
  * in development. This prevents connections growing exponentially
  * during API Route usage.
  */
-let cached = global.mongoose;
+type MongooseCache = {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+};
 
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
+let cached: MongooseCache;
+
+if (!global.mongoose) {
+  cached = { conn: null, promise: null };
+  global.mongoose = cached;
+} else {
+  cached = global.mongoose;
 }
 
 /**
@@ -37,10 +45,10 @@ async function connectMongoDB() {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then(() => {
       console.log('✅ Connected to MongoDB');
       return mongoose;
-    });
+    }) as Promise<typeof mongoose>;
   }
 
   try {

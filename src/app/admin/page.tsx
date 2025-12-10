@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { PropertyForm } from './components/PropertyForm';
 import { PropertyList } from './components/PropertyList';
 import { UploadImages } from './components/UploadImages';
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '../../lib/supabase/client';
 
 export default function AdminPage() {
   const [properties, setProperties] = useState<any[]>([]);

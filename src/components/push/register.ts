@@ -36,7 +36,7 @@ export interface PushRegistrationResult {
 /**
  * Convert base64 VAPID key to Uint8Array for subscription
  */
-function urlBase64ToUint8Array(base64String: string): Uint8Array {
+function urlBase64ToUint8Array(base64String: string): BufferSource {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding)
     .replace(/-/g, '+')
@@ -49,7 +49,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
     outputArray[i] = rawData.charCodeAt(i);
   }
 
-  return outputArray;
+  return outputArray as BufferSource;
 }
 
 // =============================================================================
@@ -201,7 +201,7 @@ export async function unsubscribeFromPush(): Promise<boolean> {
 /**
  * Check if currently subscribed
  */
-export async function isSubscribed(): Promise<boolean> {
+export async function checkIsSubscribed(): Promise<boolean> {
   try {
     const registration = await navigator.serviceWorker.ready;
     const subscription = await registration.pushManager.getSubscription();
@@ -270,7 +270,7 @@ export function usePushNotifications() {
     const init = async () => {
       setIsSupported(isPushSupported());
       setPermission(getNotificationPermission());
-      setIsSubscribedState(await isSubscribed());
+      setIsSubscribedState(await checkIsSubscribed());
       setIsLoading(false);
     };
 

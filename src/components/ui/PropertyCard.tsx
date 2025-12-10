@@ -4,9 +4,9 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Heart, Bed, Bath, Maximize, MapPin } from 'lucide-react'
-import { formatPrice, cn } from '@/lib/utils'
-import { Property } from '@/lib/supabase'
-import { LuxuryModeWrapper } from '@/components/ui/LuxuryModeWrapper'
+import { formatPrice, cn } from '../../lib/utils'
+import { Property } from '../../lib/supabase'
+import { LuxuryModeWrapper } from './LuxuryModeWrapper'
 
 type PropertyCardProps = {
   property: Property
@@ -48,11 +48,11 @@ export function PropertyCard({ property, index }: PropertyCardProps) {
             className="relative w-full h-full"
           >
           <Image
-            src={property.images?.[0] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800'}
+            src={property.main_image || property.images?.[0] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800'}
             alt={property.title}
             fill
-              className="object-cover"
-            />
+            className="object-cover"
+          />
           </motion.div>
           
           {/* Dark overlay */}
@@ -69,7 +69,7 @@ export function PropertyCard({ property, index }: PropertyCardProps) {
             className="absolute top-4 left-4"
           >
             <span className="px-3 py-1 rounded-full bg-indigo-500/90 backdrop-blur-sm text-xs font-semibold text-white">
-              {property.property_type === 'apartment' ? 'Novinka' : 'Exkluzivní'}
+              {property.type === 'apartment' ? 'Novinka' : 'Exkluzivní'}
             </span>
           </motion.div>
 
@@ -122,10 +122,10 @@ export function PropertyCard({ property, index }: PropertyCardProps) {
                 {property.bathrooms}
               </span>
             )}
-            {property.sqft && (
+            {property.area && (
               <span className="flex items-center gap-1.5">
                 <Maximize className="w-4 h-4" />
-                {property.sqft} m²
+                {property.area} m²
               </span>
             )}
           </div>
@@ -141,6 +141,18 @@ export function PropertyCard({ property, index }: PropertyCardProps) {
             >
               {formatPrice(property.price)}
             </motion.p>
+          </div>
+
+          {/* Sreality.cz Attribution */}
+          <div className="flex items-center gap-2 pt-3 pb-1">
+            <span className="text-xs text-[#6b6b6b] flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Via Sreality.cz
+            </span>
           </div>
         </div>
       </motion.div>

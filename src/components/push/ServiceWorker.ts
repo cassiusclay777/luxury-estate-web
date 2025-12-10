@@ -65,7 +65,7 @@ self.addEventListener('push', (event) => {
     const payload: PushPayload = event.data.json();
     console.log('[SW] Push payload:', payload);
 
-    const options: NotificationOptions = {
+    const options = {
       body: payload.body,
       icon: payload.icon || '/icons/icon-192x192.png',
       badge: payload.badge || '/icons/badge-72x72.png',
@@ -76,7 +76,7 @@ self.addEventListener('push', (event) => {
       requireInteraction: payload.type === 'price_drop', // Keep price drops visible
       actions: getNotificationActions(payload.type),
       vibrate: [200, 100, 200],
-    };
+    } as NotificationOptions;
 
     event.waitUntil(
       self.registration.showNotification(payload.title, options)
@@ -86,7 +86,7 @@ self.addEventListener('push', (event) => {
   }
 });
 
-function getNotificationActions(type: string): NotificationAction[] {
+function getNotificationActions(type: string): Array<{ action: string; title: string }> {
   switch (type) {
     case 'price_drop':
       return [

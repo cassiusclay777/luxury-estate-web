@@ -3,8 +3,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, Bot, X, Sparkles, Home, TrendingUp } from 'lucide-react'
-import { chatWithAIStream, ChatMessage, PropertyRecommendation } from '@/services/groqai'
-import { Property } from '@/lib/supabase'
+import { chatWithAIStream, ChatMessage, PropertyRecommendation } from '../../services/groqai'
+import { Property } from '../../lib/supabase'
 import Link from 'next/link'
 
 interface AIChatProps {

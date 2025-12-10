@@ -268,11 +268,11 @@ export async function searchProperties(searchQuery: string): Promise<Property[]>
       .select('*')
       .or(`title.ilike.%${searchQuery}%,address.ilike.%${searchQuery}%,city.ilike.%${searchQuery}%`)
       .limit(20);
-    
+
     return fallbackData || [];
   }
 
-  return data || [];
+  return (data as unknown as Property[]) || [];
 }
 
 /**
@@ -294,7 +294,7 @@ export async function getNearbyProperties(
     return [];
   }
 
-  return data || [];
+  return (data as unknown as Property[]) || [];
 }
 
 // =============================================================================
@@ -330,7 +330,7 @@ export async function saveStagedImage(
     return null;
   }
 
-  return data as StagedImage;
+  return data as unknown as StagedImage;
 }
 
 /**
@@ -348,7 +348,7 @@ export async function getStagedImages(propertyId: string): Promise<StagedImage[]
     return [];
   }
 
-  return (data as StagedImage[]) || [];
+  return (data as unknown as StagedImage[]) || [];
 }
 
 // =============================================================================

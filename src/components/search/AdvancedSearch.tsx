@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, MapPin, SlidersHorizontal, X, Loader2 } from 'lucide-react'
-import { searchProperties, searchNearbyProperties, getSearchSuggestions, type SearchFilters } from '@/app/actions/properties'
+import { searchProperties, searchNearbyProperties, getSearchSuggestions, type SearchFilters } from '../../app/actions/properties'
 import type { Database } from 'types/database.types'
 
 type Property = Database['public']['Tables']['properties']['Row']

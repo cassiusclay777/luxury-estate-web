@@ -4,6 +4,7 @@
     "supabase.vscode-supabase-extension",
     "ms-kubernetes-tools.vscode-kubernetes-tools",
     "amazonwebservices.aws-toolkit-vscode",
-    "amazonwebservices.amazon-q-vscode"
+    "amazonwebservices.amazon-q-vscode",
+    "saoudrizwan.claude-dev"
   ]
 }

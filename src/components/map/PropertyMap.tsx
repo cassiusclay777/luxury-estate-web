@@ -85,7 +85,7 @@ export function PropertyMap({ properties, center, zoom = 13, onPropertyClick }: 
       el.addEventListener('mouseleave', () => {
         el.style.transform = 'scale(1) translateY(0)'
         const bubble = el.querySelector('.marker-price-bubble') as HTMLElement
-        if (bubble && !selectedProperty || selectedProperty.id !== property.id) {
+        if (bubble && (!selectedProperty || selectedProperty.id !== property.id)) {
           bubble.style.opacity = '0'
           bubble.style.transform = 'translateY(0) scale(0.9)'
         }

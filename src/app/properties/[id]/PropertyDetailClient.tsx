@@ -11,8 +11,8 @@ import {
   Sparkles, ChevronLeft, ChevronRight, Play, Box,
   Wand2, Calendar, Phone, Mail, Star, Eye
 } from 'lucide-react'
-import { formatPrice, cn } from '@/lib/utils'
-import { LuxuryModeWrapper } from '@/components/ui/LuxuryModeWrapper'
+import { formatPrice, cn } from '../../../lib/utils'
+import { LuxuryModeWrapper } from '../../../components/ui/LuxuryModeWrapper'
 
 interface Property {
   id: string

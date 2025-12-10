@@ -33,7 +33,13 @@
       "Bash(npx next build:*)",
       "Bash(timeout 10 npm run dev)",
       "Bash(tee:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(node --version:*)",
+      "Bash(npm --version:*)",
+      "Bash(npx next:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []

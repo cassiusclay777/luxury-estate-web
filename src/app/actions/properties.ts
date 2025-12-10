@@ -1,6 +1,6 @@
 'use server'
 
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createServerSupabaseClient } from '../../lib/supabase/server'
 import type { Database } from 'types/database.types'
 
 type Property = Database['public']['Tables']['properties']['Row']

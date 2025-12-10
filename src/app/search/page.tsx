@@ -2,10 +2,10 @@
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { PropertyCard } from '@/components/ui/PropertyCard'
-import { MapView } from '@/components/map/MapView'
-import { searchProperties, type SearchFilters } from '@/lib/search'
-import type { Property } from '@/lib/supabase'
+import { PropertyCard } from '../../components/ui/PropertyCard'
+import { MapView } from '../../components/map/MapView'
+import { searchProperties, type SearchFilters } from '../../lib/search'
+import type { Property } from '../../lib/supabase'
 import { Loader2, Map, Grid3X3, SlidersHorizontal } from 'lucide-react'
 
 function SearchContent() {

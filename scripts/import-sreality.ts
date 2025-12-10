@@ -1,5 +1,5 @@
 import { Client } from 'pg'
-import { fetchSrealityRSS, type SrealityListing } from '../src/lib/sreality-scraper'
+import { fetchAllCategories, type SrealityProperty } from '../src/lib/sreality-api'
 
 // Initialize PostgreSQL client
 const client = new Client({
@@ -27,7 +27,7 @@ function generateSlug(title: string, id: string): string {
 /**
  * Import listings to Supabase
  */
-async function importListings(listings: SrealityListing[]) {
+async function importListings(listings: SrealityProperty[]) {
   console.log(`\nImporting ${listings.length} listings to Supabase...`)
 
   let successCount = 0
@@ -134,27 +134,13 @@ async function main() {
   console.log('Connected to database')
 
   try {
-    const categories: Array<'byty' | 'domy'> = ['byty', 'domy']
-    const types: Array<'prodej' | 'pronajem'> = ['prodej']
+    // Fetch properties from Sreality API (with images!)
+    const listings = await fetchAllCategories(15) // 15 per category
 
-    for (const category of categories) {
-      for (const type of types) {
-        console.log(`\nFetching ${category} - ${type}...`)
-
-        // Fetch without geocoding (faster, GPS coords will be null)
-        const allListings = await fetchSrealityRSS(category, type)
-        const listings = allListings.slice(0, 10) // Limit to 10 per category
-
-        if (listings.length > 0) {
-          await importListings(listings)
-        }
-
-        // Wait a bit between categories to be nice to the APIs
-        if (category !== 'domy' || type !== 'prodej') {
-          console.log('\nWaiting 2 seconds before next category...')
-          await new Promise(resolve => setTimeout(resolve, 2000))
-        }
-      }
+    if (listings.length > 0) {
+      await importListings(listings)
+    } else {
+      console.log('No listings fetched!')
     }
 
     console.log('\n' + '='.repeat(60))

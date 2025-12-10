@@ -37,7 +37,7 @@ export async function searchProperties(filters: SearchFilters): Promise<SearchRe
     }
 
     return {
-      properties: (data as Property[]) || [],
+      properties: (data as unknown as Property[]) || [],
       total: count || 0
     }
   }
@@ -95,18 +95,17 @@ export async function searchNearby(
 ): Promise<Property[]> {
   // Using Haversine formula via PostgreSQL
   const { data, error } = await supabase.rpc('nearby_properties', {
-    lat_input: lat,
-    lng_input: lng,
-    radius_km: radiusKm,
-    limit_count: limit
-  })
+    user_lat: lat,
+    user_lng: lng,
+    radius_km: radiusKm
+  } as any)
 
   if (error) {
     console.error('Nearby search error:', error)
     return []
   }
 
-  return (data as Property[]) || []
+  return (data as unknown as Property[]) || []
 }
 
 /**
@@ -123,8 +122,8 @@ export async function getSearchSuggestions(query: string): Promise<string[]> {
 
   const { data: types } = await supabase
     .from('properties')
-    .select('property_type')
-    .ilike('property_type', `%${query}%`)
+    .select('type')
+    .ilike('type', `%${query}%`)
     .limit(5)
 
   const suggestions: string[] = []
@@ -139,8 +138,8 @@ export async function getSearchSuggestions(query: string): Promise<string[]> {
 
   if (types) {
     types.forEach(t => {
-      if (t.property_type && !suggestions.includes(t.property_type)) {
-        suggestions.push(t.property_type)
+      if (t.type && !suggestions.includes(t.type)) {
+        suggestions.push(t.type)
       }
     })
   }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Sparkles, Wand2, ArrowLeft, AlertCircle } from 'lucide-react'
@@ -11,7 +11,7 @@ import { StyleSelector } from './components/StyleSelector'
 import { ResultPreview } from './components/ResultPreview'
 import { SampleRooms } from './components/SampleRooms'
 
-export default function AIStagingPage() {
+function AIStagingPageContent() {
   const searchParams = useSearchParams()
   const [imageUrl, setImageUrl] = useState<string>('')
   const [style, setStyle] = useState<InteriorStyle>('modern')
@@ -302,5 +302,13 @@ export default function AIStagingPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function AIStagingPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-bg-primary flex items-center justify-center"><p className="text-white">Loading...</p></div>}>
+      <AIStagingPageContent />
+    </Suspense>
   )
 }

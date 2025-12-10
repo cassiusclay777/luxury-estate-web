@@ -23,7 +23,7 @@ import { TrendingUp, TrendingDown, Minus, Info, MapPin, Ruler, Calendar } from '
 // TYPES
 // =============================================================================
 
-interface LuxEstimateProps {
+export interface LuxEstimateProps {
   propertyPrice: number;
   propertyArea: number;
   city: string;

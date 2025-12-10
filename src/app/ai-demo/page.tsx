@@ -1,5 +1,5 @@
-import { AIChat } from '@/components/ai/AIChat'
-import { supabase } from '@/lib/supabase'
+import { AIChat } from '../../components/ai/AIChat'
+import { supabase } from '../../lib/supabase'
 import { Bot, Sparkles, Brain, TrendingUp, Zap } from 'lucide-react'
 
 export default async function AIDemoPage() {

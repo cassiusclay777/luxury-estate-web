@@ -2,11 +2,6 @@
 const path = require('path');
 
 const nextConfig = {
-  experimental: {
-    turbo: {
-      root: path.join(__dirname),
-    },
-  },
   images: {
     remotePatterns: [
       {
@@ -22,6 +17,13 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      // Sreality images
+      {
+        protocol: 'https',
+        hostname: 'd18-a.sdn.cz',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   // Ensure CSS is processed correctly
@@ -32,6 +34,14 @@ const nextConfig = {
         fs: false,
       };
     }
+    
+    // Configure aliases to match tsconfig.json
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname, 'src'),
+      'types': path.resolve(__dirname, 'types'),
+    };
+    
     return config;
   },
 };

@@ -2,8 +2,8 @@
 import { useEffect, useRef, useState } from 'react'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { Property } from '@/lib/supabase'
-import { formatPrice } from '@/lib/utils'
+import { Property } from '../../lib/supabase'
+import { formatPrice } from '../../lib/utils'
 import { motion } from 'framer-motion'
 
 interface MapViewProps {
