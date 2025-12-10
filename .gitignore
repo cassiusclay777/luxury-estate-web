@@ -28,6 +28,11 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.production
+
+# Deployment guides with sensitive keys
+VERCEL-ENV-SETUP.md
+setup-vercel-env.ps1
 
 # vercel
 .vercel

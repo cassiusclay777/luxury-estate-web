@@ -64,10 +64,12 @@ interface SrealityAPIResponse {
 export async function fetchSrealityProperties(
   categoryMain: number = 1, // byty
   categoryType: number = 1, // prodej
-  perPage: number = 20
+  perPage: number = 20,
+  region: number = 14 // 14 = Jihomoravský kraj
 ): Promise<SrealityProperty[]> {
   try {
-    const url = `https://www.sreality.cz/api/cs/v2/estates?category_main_cb=${categoryMain}&category_type_cb=${categoryType}&per_page=${Math.min(perPage, 100)}`
+    // Add region filter for Jihomoravský kraj (Brno and surroundings)
+    const url = `https://www.sreality.cz/api/cs/v2/estates?category_main_cb=${categoryMain}&category_type_cb=${categoryType}&region=${region}&per_page=${Math.min(perPage, 100)}`
 
     console.log(`Fetching from Sreality API: ${url}`)
 
@@ -150,12 +152,12 @@ export async function fetchSrealityProperties(
 }
 
 /**
- * Fetch properties from multiple categories
+ * Fetch properties from multiple categories (Jihomoravský kraj only)
  */
 export async function fetchAllCategories(maxPerCategory: number = 10): Promise<SrealityProperty[]> {
   const categories = [
-    { main: 1, type: 1, name: 'byty-prodej' },
-    { main: 2, type: 1, name: 'domy-prodej' }
+    { main: 1, type: 1, name: 'byty-prodej-jmk' },
+    { main: 2, type: 1, name: 'domy-prodej-jmk' }
   ]
 
   const allProperties: SrealityProperty[] = []

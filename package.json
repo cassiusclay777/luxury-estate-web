@@ -12,7 +12,8 @@
     "test:mongodb": "tsx scripts/test-mongodb-connection.ts",
     "mongodb:demo": "tsx scripts/getting-started-mongodb.ts",
     "import:sreality": "tsx scripts/import-sreality.ts",
-    "import:sreality:watch": "node --watch scripts/import-sreality.ts"
+    "import:sreality:watch": "node --watch scripts/import-sreality.ts",
+    "import:production": "tsx scripts/import-to-production.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.77",
